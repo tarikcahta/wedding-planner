@@ -3,7 +3,7 @@ import { useFonts } from 'expo-font';
 import CategoryButton from '../components/CategoryButton';
 import SummaryHeader from '../components/SummaryHeader';
 
-const App = () => {
+const Summary = () => {
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
   });
@@ -41,7 +41,7 @@ const App = () => {
   );
 };
 
-export default App;
+export default Summary;
 
 const styles = StyleSheet.create({
   pageContainer: {

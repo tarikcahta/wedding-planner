@@ -5,7 +5,7 @@ import SummaryHeader from '../components/SummaryHeader';
 import SearchButton from '../components/SearchButton';
 import LocationParamBtn from '../components/LocationParamBtn';
 
-const Category = () => {
+const VenuesCategory = () => {
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
   });
@@ -24,12 +24,13 @@ const Category = () => {
 
       <View style={styles.mainBody}>
         <View style={styles.mBCategories}>
-          <Text style={styles.mBCategoriesTxt}>CATEGORY</Text>
+          <Text style={styles.mBCategoriesTxt}>VENUES</Text>
         </View>
 
         <View style={styles.scrollStyle}>
           <LocationParamBtn onPress={handlePress} />
           <CategoryButton onPress={handlePress} title={'Budget'} />
+          <CategoryButton onPress={handlePress} title={'Number of guests'} />
         </View>
         <View style={styles.searchBtn}>
           <SearchButton onPress={handlePress} title={'Search'} />
@@ -39,7 +40,7 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default VenuesCategory;
 
 const styles = StyleSheet.create({
   pageContainer: {
