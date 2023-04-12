@@ -1,45 +1,72 @@
-import { StyleSheet, Text, View, TextInput, ImageBackground, Pressable, ScrollView } from 'react-native';
-import MainButton from '../components/MainButton';
-import Button from '../components/Button';
-import bgImg from '../assets/images/bg.png';
-import { useCallback } from 'react';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
+import CategoryButton from '../components/CategoryButton';
+import SummaryHeader from '../components/SummaryHeader';
 
-SplashScreen.preventAutoHideAsync();
-
-export default function Summary({ navigation }) {
+const Summary = () => {
   const [fontsLoaded] = useFonts({
-    'AbhayaLibre': require('../assets/fonts/AbhayaLibre-Bold.ttf'),
-    'QwitcherGrypen': require('../assets/fonts/QwitcherGrypen-Bold.ttf'),
+    AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
   });
-
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
 
   if (!fontsLoaded) {
     return null;
   }
 
+  const handlePress = () => {
+    console.log('Icon pressed');
+  };
 
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
-        
-        <MainButton title="SUMMARY" style={{height: 60, Color: 'black', fontFamily: 'AbhayaLibre', backgroundColor:'#bdbdbd'}} />
+    <View style={styles.pageContainer}>
+      <SummaryHeader onPress={handlePress} />
+      <View style={styles.mainBody}>
+        <View style={styles.mBCategories}>
+          <Text style={styles.mBCategoriesTxt}>CATEGORIES</Text>
+        </View>
 
+        <ScrollView style={styles.scrollStyle}>
+          <CategoryButton title={'Dresses'} onPress={handlePress} />
+          <CategoryButton title={'Suits'} onPress={handlePress} />
+          <CategoryButton title={'Venues'} onPress={handlePress} />
+          <CategoryButton title={'Photo / Video'} onPress={handlePress} />
+          <CategoryButton title={'Music'} onPress={handlePress} />
+          <CategoryButton title={'Catering'} onPress={handlePress} />
+          <CategoryButton title={'Decoration'} onPress={handlePress} />
+          <CategoryButton title={'Invitations'} onPress={handlePress} />
+          <CategoryButton title={'Cake'} onPress={handlePress} />
+          <CategoryButton title={'Car rental'} onPress={handlePress} />
+        </ScrollView>
+      </View>
     </View>
   );
-}
+};
+
+export default Summary;
 
 const styles = StyleSheet.create({
-  container: {
+  pageContainer: {
     flex: 1,
-    backgroundColor: '#b0b0b0',
-    justifyContent: 'center',
     alignItems: 'center',
-    width: "100%", 
+    justifyContent: 'center',
+  },
+  mainBody: {
+    flex: 4,
+    width: '100%',
+  },
+  scrollStyle: {
+    marginTop: 20,
+    marginBottom: 30,
+  },
+  mBCategories: {
+    width: '90%',
+    marginLeft: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  mBCategoriesTxt: {
+    color: '#C49D62',
+    letterSpacing: 2,
+    fontSize: 25,
+    fontFamily: 'AbhayaLibre',
   },
 });
