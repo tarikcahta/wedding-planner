@@ -8,7 +8,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function Register() {
+export default function Register( { navigation } ) {
   const [fontsLoaded] = useFonts({
     'AbhayaLibre': require('../assets/fonts/AbhayaLibre-Bold.ttf'),
     'QwitcherGrypen': require('../assets/fonts/QwitcherGrypen-Bold.ttf'),
@@ -49,7 +49,7 @@ export default function Register() {
         </View>
     
 
-        <MainButton title="LOG IN" style={{fontFamily: 'AbhayaLibre', marginBottom: 10}}/>
+        <MainButton onPress={() => navigation.navigate('Home')} title="LOG IN" style={{fontFamily: 'AbhayaLibre', marginBottom: 10}}/>
         
       </ImageBackground>
     </View>
