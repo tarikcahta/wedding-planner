@@ -24,7 +24,7 @@ const PhotoVideo = () => {
 
       <View style={styles.mainBody}>
         <View style={styles.mBCategories}>
-          <Text style={styles.mBCategoriesTxt}>DRESSES</Text>
+          <Text style={styles.mBCategoriesTxt}>PHOTO / VIDEO</Text>
         </View>
 
         <View style={styles.scrollStyle}>

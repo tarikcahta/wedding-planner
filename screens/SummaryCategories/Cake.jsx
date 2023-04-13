@@ -24,7 +24,7 @@ const Cake = () => {
 
       <View style={styles.mainBody}>
         <View style={styles.mBCategories}>
-          <Text style={styles.mBCategoriesTxt}>DRESSES</Text>
+          <Text style={styles.mBCategoriesTxt}>CAKE</Text>
         </View>
 
         <View style={styles.scrollStyle}>
