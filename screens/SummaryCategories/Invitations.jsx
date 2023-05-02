@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { useFonts } from 'expo-font';
-import CategoryButton from '../components/CategoryButton';
-import SummaryHeader from '../components/SummaryHeader';
-import SearchButton from '../components/SearchButton';
-import LocationParamBtn from '../components/LocationParamBtn';
+import CategoryButton from '../../components/CategoryButton';
+import SummaryHeader from '../../components/SummaryHeader';
+import SearchButton from '../../components/SearchButton';
+import LocationParamBtn from '../../components/LocationParamBtn';
 
-const VenuesCategory = () => {
+const Invitations = () => {
   const [fontsLoaded] = useFonts({
-    AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
+    AbhayaLibre: require('../../assets/fonts/AbhayaLibre-Bold.ttf'),
   });
 
   if (!fontsLoaded) {
@@ -24,13 +24,12 @@ const VenuesCategory = () => {
 
       <View style={styles.mainBody}>
         <View style={styles.mBCategories}>
-          <Text style={styles.mBCategoriesTxt}>VENUES</Text>
+          <Text style={styles.mBCategoriesTxt}>INVITATIONS</Text>
         </View>
 
         <View style={styles.scrollStyle}>
           <LocationParamBtn onPress={handlePress} />
           <CategoryButton onPress={handlePress} title={'Budget'} />
-          <CategoryButton onPress={handlePress} title={'Number of guests'} />
         </View>
         <View style={styles.searchBtn}>
           <SearchButton onPress={handlePress} title={'Search'} />
@@ -40,7 +39,7 @@ const VenuesCategory = () => {
   );
 };
 
-export default VenuesCategory;
+export default Invitations;
 
 const styles = StyleSheet.create({
   pageContainer: {

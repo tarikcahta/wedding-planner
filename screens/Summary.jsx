@@ -18,7 +18,7 @@ const Summary = () => {
 
   return (
     <View style={styles.pageContainer}>
-      <SummaryHeader onPress={handlePress} />
+      <SummaryHeader onPress={handlePress} title={'SUMMARY'} />
       <View style={styles.mainBody}>
         <View style={styles.mBCategories}>
           <Text style={styles.mBCategoriesTxt}>CATEGORIES</Text>

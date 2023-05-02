@@ -3,7 +3,7 @@ import { useFonts } from 'expo-font';
 import backIcon from '../assets/images/goBackIcon.png';
 import hamburgerIcon from '../assets/images/hamburgerIconSumm.png';
 
-const SummaryHeader = ({ onPress }) => {
+const SummaryHeader = ({ onPress, title }) => {
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
   });
@@ -13,16 +13,18 @@ const SummaryHeader = ({ onPress }) => {
   }
 
   return (
-    <View style={styles.pageHeader}>
-      <TouchableOpacity onPress={onPress}>
-        <Image source={backIcon} />
-      </TouchableOpacity>
-      <View>
-        <Text style={styles.pageHeaderText}>SUMMARY</Text>
+    <View style={styles.pageHeaderContainer}>
+      <View style={styles.pageHeader}>
+        <TouchableOpacity onPress={onPress}>
+          <Image source={backIcon} />
+        </TouchableOpacity>
+        <View>
+          <Text style={styles.pageHeaderText}>{title}</Text>
+        </View>
+        <TouchableOpacity onPress={onPress}>
+          <Image source={hamburgerIcon} />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={onPress}>
-        <Image source={hamburgerIcon} />
-      </TouchableOpacity>
     </View>
   );
 };
@@ -30,11 +32,16 @@ const SummaryHeader = ({ onPress }) => {
 export default SummaryHeader;
 
 const styles = StyleSheet.create({
-  pageHeader: {
-    flex: 1,
+  pageHeaderContainer: {
     width: '100%',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pageHeader: {
+    width: '90%',
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   pageHeaderText: {

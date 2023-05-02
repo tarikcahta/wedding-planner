@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { useFonts } from 'expo-font';
-import CategoryButton from '../components/CategoryButton';
-import SummaryHeader from '../components/SummaryHeader';
-import SearchButton from '../components/SearchButton';
-import LocationParamBtn from '../components/LocationParamBtn';
+import CategoryButton from '../../components/CategoryButton';
+import SummaryHeader from '../../components/SummaryHeader';
+import SearchButton from '../../components/SearchButton';
+import LocationParamBtn from '../../components/LocationParamBtn';
 
-const Category = () => {
+const Catering = () => {
   const [fontsLoaded] = useFonts({
-    AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
+    AbhayaLibre: require('../../assets/fonts/AbhayaLibre-Bold.ttf'),
   });
 
   if (!fontsLoaded) {
@@ -24,7 +24,7 @@ const Category = () => {
 
       <View style={styles.mainBody}>
         <View style={styles.mBCategories}>
-          <Text style={styles.mBCategoriesTxt}>CATEGORY</Text>
+          <Text style={styles.mBCategoriesTxt}>CATERING</Text>
         </View>
 
         <View style={styles.scrollStyle}>
@@ -39,7 +39,7 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default Catering;
 
 const styles = StyleSheet.create({
   pageContainer: {
