@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, TextInput, ImageBackground, Pressable } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ImageBackground, Pressable, Image, TouchableOpacity } from 'react-native';
 import MainButton from '../components/MainButton';
 import Button from '../components/Button';
 import bgImg from '../assets/images/bg.png';
+import HomeHamburger from '../assets/images/HomeHamburger.png';
 import { useCallback } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -26,7 +27,11 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-       <ImageBackground source={bgImg} resizeMode="cover" style={styles.imageBG}>
+        <ImageBackground source={bgImg} resizeMode="cover" style={styles.imageBG}>
+
+        <TouchableOpacity style={styles.Hamburger} onPress={() => navigation.openDrawer()}>
+          <Image source={HomeHamburger} />
+        </TouchableOpacity>
 
         <Text style={{fontFamily: 'QwitcherGrypen', fontSize: 90, lineHeight: 100, color: 'white', marginTop: 100, width: '100%', textAlign:'center'}}>Mia</Text>
         <Text style={{fontFamily: 'QwitcherGrypen', fontSize: 90, lineHeight: 100, color: 'white', width: '100%', textAlign:'center'}}>&</Text>
@@ -75,5 +80,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: "100%", 
     width: "100%", 
+  },
+  Hamburger: {
+    position: "absolute",
+    top: 50,
+    right: 20,
   },
 });

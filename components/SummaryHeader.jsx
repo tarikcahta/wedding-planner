@@ -3,7 +3,7 @@ import { useFonts } from 'expo-font';
 import backIcon from '../assets/images/goBackIcon.png';
 import hamburgerIcon from '../assets/images/hamburgerIconSumm.png';
 
-const SummaryHeader = ({ onPress, title }) => {
+const SummaryHeader = ({ onPress, onPressDrawer, title }) => {
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
   });
@@ -21,7 +21,7 @@ const SummaryHeader = ({ onPress, title }) => {
         <View>
           <Text style={styles.pageHeaderText}>{title}</Text>
         </View>
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity onPress={onPressDrawer}>
           <Image source={hamburgerIcon} />
         </TouchableOpacity>
       </View>
