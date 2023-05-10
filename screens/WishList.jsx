@@ -41,12 +41,16 @@ export default function WishList({ navigation }) {
     setContainerHeight(height);
   };
 
+  const handlePress = () => {
+    navigation.navigate('Home')
+  };
+
   const lineCount = Math.floor(containerHeight / 10);
   const lines = Array.from({ length: lineCount }, (_, i) => i);
 
   return (
     <View style={styles.container}>
-      <SummaryHeader title={'WISH LIST'} />
+      <SummaryHeader title={'WISH LIST'} onPress={handlePress} onPressDrawer={() => navigation.openDrawer()}/>
       <View style={styles.notesBlock} onLayout={onContainerLayout}>
         <Text style={styles.notesHeader}>Notes</Text>
         {lines.map((line) => (
