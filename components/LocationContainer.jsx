@@ -6,7 +6,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const LocationContainer = ({
   title,
   address,
-  workHoursOpened,
+  hoursOpened,
+  hoursClosed,
   workHoursTime,
   phoneNumber,
   image,
@@ -18,6 +19,15 @@ const LocationContainer = ({
   if (!fontsLoaded) {
     return null;
   }
+
+  const isOpen = (hoursOpened, hoursClosed) => {
+    let currentTime = new Date().getHours();
+    if (currentTime >= hoursOpened && currentTime < hoursClosed) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   return (
     <View style={styles.locations}>
@@ -36,8 +46,14 @@ const LocationContainer = ({
             </View>
             <View style={styles.addressContainer}>
               <Icon name="progress-clock" size={20} color="black" />
-              <Text style={[styles.textStyles, styles.greenLetters]}>
-                {workHoursOpened}
+              <Text
+                style={
+                  isOpen(hoursOpened, hoursClosed)
+                    ? styles.greenLetters
+                    : styles.redLetters
+                }
+              >
+                {isOpen(hoursOpened, hoursClosed) ? 'Open' : 'Closed'}
               </Text>
               <Text style={styles.textStyles}>{workHoursTime}</Text>
             </View>
@@ -93,6 +109,17 @@ const styles = StyleSheet.create({
   },
   greenLetters: {
     color: 'rgba(98, 181, 90, 1)',
+    fontFamily: 'AbhayaLibre',
+    fontSize: 10,
+    marginLeft: 10,
+    letterSpacing: 1.3,
+  },
+  redLetters: {
+    color: '#b55a5a',
+    fontFamily: 'AbhayaLibre',
+    fontSize: 10,
+    marginLeft: 10,
+    letterSpacing: 1.3,
   },
   rightSideLocationsStyles: {
     width: '65%',
