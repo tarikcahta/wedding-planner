@@ -14,7 +14,7 @@ import SummaryHeader from '../components/SummaryHeader';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function WishList( {navigation} ) {
+export default function WishList({navigation}) {
   const [text, setText] = useState('');
 
   const [fontsLoaded] = useFonts({
@@ -38,7 +38,7 @@ export default function WishList( {navigation} ) {
 
   return (
     <View style={styles.container}>
-      <SummaryHeader onPress={handlePress} title={'WISH LIST'} onPressDrawer={() => navigation.openDrawer()}/>
+      <SummaryHeader title={'WISH LIST'} onPress={handlePress} onPressDrawer={() => navigation.openDrawer()}/>
       <View style={styles.notesBlock}>
 
       </View>
