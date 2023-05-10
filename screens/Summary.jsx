@@ -3,7 +3,7 @@ import { useFonts } from 'expo-font';
 import CategoryButton from '../components/CategoryButton';
 import SummaryHeader from '../components/SummaryHeader';
 
-const Summary = () => {
+const Summary = ( {navigation} ) => {
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
   });
@@ -13,28 +13,28 @@ const Summary = () => {
   }
 
   const handlePress = () => {
-    console.log('Icon pressed');
+    navigation.navigate('Home')
   };
 
   return (
     <View style={styles.pageContainer}>
-      <SummaryHeader onPress={handlePress} title={'SUMMARY'} />
+      <SummaryHeader onPress={handlePress} title={'SUMMARY'} onPressDrawer={() => navigation.openDrawer()}/>
       <View style={styles.mainBody}>
         <View style={styles.mBCategories}>
           <Text style={styles.mBCategoriesTxt}>CATEGORIES</Text>
         </View>
 
         <ScrollView style={styles.scrollStyle}>
-          <CategoryButton title={'Dresses'} onPress={handlePress} />
-          <CategoryButton title={'Suits'} onPress={handlePress} />
-          <CategoryButton title={'Venues'} onPress={handlePress} />
-          <CategoryButton title={'Photo / Video'} onPress={handlePress} />
-          <CategoryButton title={'Music'} onPress={handlePress} />
-          <CategoryButton title={'Catering'} onPress={handlePress} />
-          <CategoryButton title={'Decoration'} onPress={handlePress} />
-          <CategoryButton title={'Invitations'} onPress={handlePress} />
-          <CategoryButton title={'Cake'} onPress={handlePress} />
-          <CategoryButton title={'Car rental'} onPress={handlePress} />
+          <CategoryButton title={'Dresses'} onPress={() => navigation.navigate('Dresses')}/>
+          <CategoryButton title={'Suits'} onPress={() => navigation.navigate('Suits')} />
+          <CategoryButton title={'Venues'} onPress={() => navigation.navigate('Venues')} />
+          <CategoryButton title={'Photo / Video'} onPress={() => navigation.navigate('PhotoVideo')} />
+          <CategoryButton title={'Music'} onPress={() => navigation.navigate('Music')} />
+          <CategoryButton title={'Catering'} onPress={() => navigation.navigate('Catering')} />
+          <CategoryButton title={'Decoration'} onPress={() => navigation.navigate('Decoration')} />
+          <CategoryButton title={'Invitations'} onPress={() => navigation.navigate('Invitations')} />
+          <CategoryButton title={'Cake'} onPress={() => navigation.navigate('Cake')} />
+          <CategoryButton title={'Car rental'} onPress={() => navigation.navigate('CarRental')} />
         </ScrollView>
       </View>
     </View>

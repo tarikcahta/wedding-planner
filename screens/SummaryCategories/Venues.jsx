@@ -5,7 +5,7 @@ import SummaryHeader from '../../components/SummaryHeader';
 import SearchButton from '../../components/SearchButton';
 import LocationParamBtn from '../../components/LocationParamBtn';
 
-const Venues = () => {
+const Venues = ( {navigation} ) => {
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../../assets/fonts/AbhayaLibre-Bold.ttf'),
   });
@@ -15,12 +15,12 @@ const Venues = () => {
   }
 
   const handlePress = () => {
-    console.log('Icon pressed');
+    navigation.navigate('Summary')
   };
 
   return (
     <View style={styles.pageContainer}>
-      <SummaryHeader onPress={handlePress} />
+      <SummaryHeader onPress={handlePress} onPressDrawer={() => navigation.openDrawer()}/>
 
       <View style={styles.mainBody}>
         <View style={styles.mBCategories}>

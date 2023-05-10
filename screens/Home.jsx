@@ -1,17 +1,56 @@
-import { StyleSheet, Text, View, TextInput, ImageBackground, Pressable } from 'react-native';
-import MainButton from '../components/MainButton';
-import Button from '../components/Button';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import bgImg from '../assets/images/bg.png';
-import { useCallback } from 'react';
+import HomeHamburger from '../assets/images/HomeHamburger.png';
+import { useCallback, useState, useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import CountdownBubble from '../components/CountdownBubble';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Home({ navigation }) {
+  const countdownData = {
+    targetDate: '2023-08-23T00:00:00Z',
+  };
+
+  const [timeLeft, setTimeLeft] = useState(
+    calculateTimeLeft(countdownData.targetDate)
+  );
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft(countdownData.targetDate));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [countdownData.targetDate]);
+
+  function calculateTimeLeft(date) {
+    const difference = +new Date(date) - +new Date();
+    let timeLeft = {};
+
+    if (difference > 0) {
+      timeLeft = {
+        months: Math.floor(difference / (1000 * 60 * 60 * 24 * 30)),
+        days: Math.floor((difference / (1000 * 60 * 60 * 24)) % 30),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((difference / (1000 * 60)) % 60),
+        seconds: Math.floor((difference / 1000) % 60),
+      };
+    }
+
+    return timeLeft;
+  }
+
   const [fontsLoaded] = useFonts({
-    'AbhayaLibre': require('../assets/fonts/AbhayaLibre-Bold.ttf'),
-    'QwitcherGrypen': require('../assets/fonts/QwitcherGrypen-Bold.ttf'),
+    AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
+    QwitcherGrypen: require('../assets/fonts/QwitcherGrypen-Bold.ttf'),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -26,35 +65,27 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-       <ImageBackground source={bgImg} resizeMode="cover" style={styles.imageBG}>
+      <ImageBackground source={bgImg} resizeMode="cover" style={styles.imageBG}>
+        <TouchableOpacity
+          style={styles.Hamburger}
+          onPress={() => navigation.openDrawer()}
+        >
+          <Image source={HomeHamburger} />
+        </TouchableOpacity>
 
-        <Text style={{fontFamily: 'QwitcherGrypen', fontSize: 90, lineHeight: 100, color: 'white', marginTop: 100, width: '100%', textAlign:'center'}}>Mia</Text>
-        <Text style={{fontFamily: 'QwitcherGrypen', fontSize: 90, lineHeight: 100, color: 'white', width: '100%', textAlign:'center'}}>&</Text>
-        <Text style={{fontFamily: 'QwitcherGrypen', fontSize: 90, lineHeight: 100, marginBottom: 50, color: 'white', width: '100%', textAlign:'center'}}>Mark</Text>
+        <Text style={styles.nameF}>Mia</Text>
+        <Text style={styles.ampersand}>&</Text>
+        <Text style={styles.nameM}>Mark</Text>
 
-        <Text style={{fontFamily: 'AbhayaLibre', fontSize: 20, marginBottom: 50, color: 'white'}}>Are getting married in</Text>
+        <Text style={styles.introToCountdown}>Are getting married in</Text>
 
-        <View style={{width:'100%', flex: 1, flexDirection:'row', justifyContent:'center'}}>
-            <View style={{width: '33%', height: 150, alignItems:'center', justifyContent:'space-between'}}>
-                <View style={{width: 100, height: 100, borderRadius: 100, backgroundColor:'white', alignItems:'center', justifyContent:'center'}}>
-                    <Text style={{fontFamily: 'AbhayaLibre', fontSize: 30, textAlign:'center', color:'#974d32'}}>11</Text>
-                </View>
-                <Text style={{fontFamily: 'AbhayaLibre', fontSize: 20, textAlign:'center', color:'#ececec'}}>months</Text>
-            </View>
+        <View style={styles.countdownBubbles}>
+          <CountdownBubble timeValue={timeLeft.months} timeUnit={'months'} />
 
-            <View style={{width: '33%', height: 150, alignItems:'center', justifyContent:'space-between'}}>
-                <View style={{width: 100, height: 100, borderRadius: 100, backgroundColor:'white', alignItems:'center', justifyContent:'center'}}>
-                    <Text style={{fontFamily: 'AbhayaLibre', fontSize: 30, textAlign:'center', color:'#974d32'}}>22</Text>
-                </View>
-                <Text style={{fontFamily: 'AbhayaLibre', fontSize: 20, textAlign:'center', color:'#ececec'}}>days</Text>
-            </View>
-
-            <View style={{width: '33%', height: 150, alignItems:'center', justifyContent:'space-between'}}>
-                <View style={{width: 100, height: 100, borderRadius: 100, backgroundColor:'white', alignItems:'center', justifyContent:'center'}}>
-                    <Text style={{fontFamily: 'AbhayaLibre', fontSize: 30, textAlign:'center', color:'#974d32'}}>8</Text>
-                </View>
-                <Text style={{fontFamily: 'AbhayaLibre', fontSize: 20, textAlign:'center', color:'#ececec'}}>hours</Text>
-            </View>
+          <CountdownBubble timeValue={timeLeft.days} timeUnit={'days'} />
+          <CountdownBubble timeValue={timeLeft.hours} timeUnit={'hours'} />
+          {/* <CountdownBubble timeValue={timeLeft.minutes} timeUnit={'minutes'} />
+          <CountdownBubble timeValue={timeLeft.seconds} timeUnit={'seconds'} /> */}
         </View>
       </ImageBackground>
     </View>
@@ -64,8 +95,8 @@ export default function Home({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: '100%',  
-    backgroundImage: {bgImg},
+    height: '100%',
+    backgroundImage: { bgImg },
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -73,7 +104,50 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: "100%", 
-    width: "100%", 
+    height: '100%',
+    width: '100%',
+  },
+  Hamburger: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+  },
+  nameF: {
+    fontFamily: 'QwitcherGrypen',
+    fontSize: 90,
+    lineHeight: 100,
+    color: 'white',
+    marginTop: 100,
+    width: '100%',
+    textAlign: 'center',
+  },
+  ampersand: {
+    fontFamily: 'QwitcherGrypen',
+    fontSize: 90,
+    lineHeight: 100,
+    color: 'white',
+    width: '100%',
+    textAlign: 'center',
+  },
+  nameM: {
+    fontFamily: 'QwitcherGrypen',
+    fontSize: 90,
+    lineHeight: 100,
+    marginBottom: 50,
+    color: 'white',
+    width: '100%',
+    textAlign: 'center',
+  },
+  introToCountdown: {
+    fontFamily: 'AbhayaLibre',
+    fontSize: 20,
+    marginBottom: 50,
+    color: 'white',
+  },
+  countdownBubbles: {
+    width: '100%',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 });
