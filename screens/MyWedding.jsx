@@ -2,7 +2,6 @@ import { StyleSheet, View } from 'react-native';
 import { useCallback } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import LocationContainer from '../components/LocationContainer';
 import SummaryHeader from '../components/SummaryHeader';
@@ -23,7 +22,7 @@ export default function MyWedding({ navigation }) {
     locationTwo: {
       title: 'Atelier Sposa',
       address: 'Azize Šaćirbegović 80c',
-      openingHour: 11,
+      openingHour: 9,
       closingHour: 17,
       workHoursTime: ' closes 5pm',
       phoneNumber: '060 30 30 388',
@@ -61,7 +60,7 @@ export default function MyWedding({ navigation }) {
       />
       <View style={styles.mainBody}>
         {locations.map((location, index) => (
-          <TouchableOpacity key={index} style={{ width: '100%' }}>
+          <View key={index} style={{ width: '100%' }}>
             <LocationContainer
               title={location.title}
               address={location.address}
@@ -71,7 +70,7 @@ export default function MyWedding({ navigation }) {
               phoneNumber={location.phoneNumber}
               image={location.image}
             />
-          </TouchableOpacity>
+          </View>
         ))}
       </View>
     </View>
