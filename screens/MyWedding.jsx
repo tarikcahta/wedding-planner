@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { useCallback } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -10,28 +10,32 @@ import SummaryHeader from '../components/SummaryHeader';
 SplashScreen.preventAutoHideAsync();
 
 export default function MyWedding({ navigation }) {
-  const location = {
-    locationOne: {
-      title: 'Salon vjenčanica i svečanih haljina',
-      address: 'Otoka, Džemala Bijedića 25/E Sarajevo',
-      openingHour: 8,
-      closingHour: 20,
-      workHoursTime: ' closes 8pm',
-      phoneNumber: '061 143 950',
-      image: require('../assets/images/salon1.jpg'),
+  const categories = [
+    {
+      name: 'Dresses',
+      choices: {
+        title: 'Salon vjenčanica i svečanih haljina',
+        address: 'Otoka, Džemala Bijedića 25/E Sarajevo',
+        openingHour: 8,
+        closingHour: 20,
+        workHoursTime: ' closes 8pm',
+        phoneNumber: '061 143 950',
+        image: require('../assets/images/salon1.jpg'),
+      },
     },
-    locationTwo: {
-      title: 'Atelier Sposa',
-      address: 'Azize Šaćirbegović 80c',
-      openingHour: 11,
-      closingHour: 17,
-      workHoursTime: ' closes 5pm',
-      phoneNumber: '060 30 30 388',
-      image: require('../assets/images/salon2.jpg'),
+    {
+      name: 'Venues',
+      choices: {
+        title: 'Restaurant Tavola',
+        address: 'Maršala Tita 50',
+        openingHour: 8,
+        closingHour: 23,
+        workHoursTime: ' closes 11pm',
+        phoneNumber: '033 222 207',
+        image: require('../assets/images/venues1.jpg'),
+      },
     },
-  };
-
-  const locations = [location.locationOne, location.locationTwo];
+  ];
 
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
@@ -60,18 +64,23 @@ export default function MyWedding({ navigation }) {
         onPressDrawer={() => navigation.openDrawer()}
       />
       <View style={styles.mainBody}>
-        {locations.map((location, index) => (
-          <TouchableOpacity key={index} style={{ width: '100%' }}>
-            <LocationContainer
-              title={location.title}
-              address={location.address}
-              hoursOpened={location.openingHour}
-              hoursClosed={location.closingHour}
-              workHoursTime={location.workHoursTime}
-              phoneNumber={location.phoneNumber}
-              image={location.image}
-            />
-          </TouchableOpacity>
+        {categories.map((category) => (
+          <View style={styles.choices} key={category.name}>
+            <View style={styles.mBCategories}>
+              <Text style={styles.mBCategoriesTxt}>{category.name}</Text>
+            </View>
+            <TouchableOpacity style={{ width: '100%' }}>
+              <LocationContainer
+                title={category.choices.title}
+                address={category.choices.address}
+                hoursOpened={category.choices.openingHour}
+                hoursClosed={category.choices.closingHour}
+                workHoursTime={category.choices.workHoursTime}
+                phoneNumber={category.choices.phoneNumber}
+                image={category.choices.image}
+              />
+            </TouchableOpacity>
+          </View>
         ))}
       </View>
     </View>
@@ -89,5 +98,21 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
+  },
+  choices: {
+    width: '103%',
+    marginBottom: 35,
+  },
+  mBCategories: {
+    width: '90%',
+    marginLeft: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  mBCategoriesTxt: {
+    color: '#C49D62',
+    letterSpacing: 4,
+    fontSize: 25,
+    fontFamily: 'AbhayaLibre',
   },
 });
