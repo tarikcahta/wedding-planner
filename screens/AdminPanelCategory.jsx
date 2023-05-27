@@ -3,7 +3,7 @@ import { useFonts } from 'expo-font';
 import SummaryHeader from '../components/SummaryHeader';
 import LocationContainerAdmin from '../components/LocationContainerAdmin';
 
-const Summary = () => {
+const AdminPanelCategory = () => {
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
   });
@@ -60,7 +60,7 @@ const Summary = () => {
   );
 };
 
-export default Summary;
+export default AdminPanelCategory;
 
 const styles = StyleSheet.create({
   pageContainer: {
@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
     width: '96%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-
   },
   btnStyle: {
     marginTop: 20,
