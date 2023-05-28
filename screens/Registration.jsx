@@ -3,6 +3,8 @@ import {
   TextInput,
   ImageBackground,
   ScrollView,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import MainButton from '../components/MainButton';
 import bgImg from '../assets/images/bg.png';
@@ -11,10 +13,13 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useState } from 'react';
 import { signUp } from './requests';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Registration({ navigation }) {
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
   const [userData, setUserData] = useState({
     name: '',
     surename: '',
@@ -39,6 +44,17 @@ export default function Registration({ navigation }) {
   if (!fontsLoaded) {
     return null;
   }
+
+  const handlePress = () => {
+    setShowDatePicker(true);
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    if (selectedDate) {
+      console.log(selectedDate);
+      setShowDatePicker(false);
+    }
+  };
 
   return (
     <ImageBackground source={bgImg} resizeMode="cover" style={styles.imageBG}>
@@ -108,17 +124,18 @@ export default function Registration({ navigation }) {
             })
           }
         />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Wedding date"
-          placeholderTextColor={'white'}
-          onChangeText={(text) =>
-            setUserData({
-              ...userData,
-              weddingDate: text,
-            })
-          }
-        />
+
+        <TouchableOpacity onPress={handlePress} style={styles.textInput}>
+          <Text style={styles.txtStyle}>Wedding Date</Text>
+        </TouchableOpacity>
+        {showDatePicker && (
+          <DateTimePicker
+            value={new Date()}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
+          />
+        )}
 
         <TextInput
           style={styles.textInput}
@@ -153,6 +170,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
+  },
+  txtStyle: {
+    color: 'white',
+    letterSpacing: 0.8,
+    fontSize: 26,
+    fontFamily: 'AbhayaLibre',
   },
   textInput: {
     width: '90%',
