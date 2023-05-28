@@ -15,9 +15,11 @@ import CountdownBubble from '../components/CountdownBubble';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function Home({ navigation }) {
+export default function Home({ navigation, route }) {
+  const { params } = route.params
+  const userInfo = params?.userInfo
   const countdownData = {
-    targetDate: '2023-08-23T00:00:00Z',
+    targetDate: userInfo?.weddingDate || new Date(),
   };
 
   const [timeLeft, setTimeLeft] = useState(
@@ -73,17 +75,17 @@ export default function Home({ navigation }) {
           <Image source={HomeHamburger} />
         </TouchableOpacity>
 
-        <Text style={styles.nameF}>Mia</Text>
+        <Text style={styles.nameF}>{userInfo?.name}</Text>
         <Text style={styles.ampersand}>&</Text>
-        <Text style={styles.nameM}>Mark</Text>
+        <Text style={styles.nameM}>{userInfo?.fianceName}</Text>
 
         <Text style={styles.introToCountdown}>Are getting married in</Text>
 
         <View style={styles.countdownBubbles}>
-          <CountdownBubble timeValue={timeLeft.months} timeUnit={'months'} />
+          <CountdownBubble timeValue={22} timeUnit={'months'} />
 
-          <CountdownBubble timeValue={timeLeft.days} timeUnit={'days'} />
-          <CountdownBubble timeValue={timeLeft.hours} timeUnit={'hours'} />
+          <CountdownBubble timeValue={3} timeUnit={'days'} />
+          <CountdownBubble timeValue={12} timeUnit={'hours'} />
           {/* <CountdownBubble timeValue={timeLeft.minutes} timeUnit={'minutes'} />
           <CountdownBubble timeValue={timeLeft.seconds} timeUnit={'seconds'} /> */}
         </View>

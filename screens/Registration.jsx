@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, ImageBackground, Pressable, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ImageBackground, Pressable, ScrollView, Alert } from 'react-native';
 import MainButton from '../components/MainButton';
 import Button from '../components/Button';
 import bgImg from '../assets/images/bg.png';
@@ -7,10 +7,12 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useState } from 'react'
 import { signUp } from './requests';
+import { Toast } from 'toastify-react-native'
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Registration({ navigation }) {
+
   const [userData, setUserData] = useState({
     name: '',
     surename: '',
@@ -34,6 +36,25 @@ export default function Registration({ navigation }) {
   if (!fontsLoaded) {
     return null;
   }
+
+  const onSaveEnteredUserData = async () => {
+    const { success, userInfo } = await signUp(userData)
+    if (success) {
+      console.log(">>>", userInfo)
+
+      navigation.navigate('Home', {
+        params: {
+          userInfo
+        },
+      });
+      Toast.success('Successfully saved!')
+    } else {
+      Alert.alert('Failed to save user data')
+      navigation.navigate('Registration')
+    }
+
+  }
+
 
   return (
     <ScrollView style={styles.container} onLayout={onLayoutRootView}>
@@ -90,7 +111,7 @@ export default function Registration({ navigation }) {
             budget: text
           })}
         />
-        <MainButton title="Save" style={{ fontFamily: 'AbhayaLibre', marginBottom: 10 }} onPress={() => signUp(userData)} />
+        <MainButton title="Save" style={{ fontFamily: 'AbhayaLibre', marginBottom: 10 }} onPress={() => onSaveEnteredUserData()} />
       </ImageBackground>
     </ScrollView>
   );
