@@ -7,34 +7,32 @@ import { useState } from 'react';
 const SearchResults = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const location = {
-    locationOne: {
+  const location = [
+    (locationOne = {
       title: 'Salon vjenčanica i svečanih haljina',
       address: 'Otoka, Džemala Bijedića 25/E Sarajevo',
       workHoursOpened: 'Open',
       workHoursTime: ' close 8pm',
       phoneNumber: '061 143 950',
       image: require('../assets/images/salon1.jpg'),
-    },
-    locationTwo: {
+    }),
+    (locationTwo = {
       title: 'Atelier Sposa',
       address: 'Azize Šaćirbegović 80c',
       workHoursOpened: 'Open',
       workHoursTime: ' close 8pm',
       phoneNumber: '060 30 30 388',
       image: require('../assets/images/salon2.jpg'),
-    },
-
-    locationThree: {
+    }),
+    (locationThree = {
       title: 'Salon vjenčanica Graziosa Sposa',
       address: 'Zagrebačka 75',
       workHoursOpened: 'Open',
       workHoursTime: ' close 8pm',
       phoneNumber: '062 014 708',
       image: require('../assets/images/salon3.jpg'),
-    },
-  };
-
+    }),
+  ];
   const handleModalVisibility = () => {
     setIsModalVisible(!isModalVisible);
   };
@@ -50,36 +48,18 @@ const SearchResults = () => {
         </View>
         <PopUpWindow visible={isModalVisible} onPress={handleModalVisibility} />
 
-        <TouchableOpacity onPress={handleModalVisibility}>
-          <LocationContainer
-            title={location.locationOne.title}
-            address={location.locationOne.address}
-            workHoursOpened={location.locationOne.workHoursOpened}
-            workHoursTime={location.locationOne.workHoursTime}
-            phoneNumber={location.locationOne.phoneNumber}
-            image={location.locationOne.image}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleModalVisibility}>
-          <LocationContainer
-            title={location.locationTwo.title}
-            address={location.locationTwo.address}
-            workHoursOpened={location.locationTwo.workHoursOpened}
-            workHoursTime={location.locationTwo.workHoursTime}
-            phoneNumber={location.locationTwo.phoneNumber}
-            image={location.locationTwo.image}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleModalVisibility}>
-          <LocationContainer
-            title={location.locationThree.title}
-            address={location.locationThree.address}
-            workHoursOpened={location.locationThree.workHoursOpened}
-            workHoursTime={location.locationThree.workHoursTime}
-            phoneNumber={location.locationThree.phoneNumber}
-            image={location.locationThree.image}
-          />
-        </TouchableOpacity>
+        {location.map((loc) => (
+          <TouchableOpacity key={loc.title} onPress={handleModalVisibility}>
+            <LocationContainer
+              title={loc.title}
+              address={loc.address}
+              workHoursOpened={loc.workHoursOpened}
+              workHoursTime={loc.workHoursTime}
+              phoneNumber={loc.phoneNumber}
+              image={loc.image}
+            />
+          </TouchableOpacity>
+        ))}
       </View>
     </View>
   );
