@@ -14,12 +14,12 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useState } from 'react';
 import { signUp } from './requests';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Toast } from 'toastify-react-native'
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Registration({ navigation }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
-
   const [userData, setUserData] = useState({
     name: '',
     surename: '',
@@ -55,6 +55,24 @@ export default function Registration({ navigation }) {
       setShowDatePicker(false);
     }
   };
+  const onSaveEnteredUserData = async () => {
+    const { success, userInfo } = await signUp(userData)
+    if (success) {
+      console.log(">>>", userInfo)
+
+      navigation.navigate('Home', {
+        params: {
+          userInfo
+        },
+      });
+      Toast.success('Successfully saved!')
+    } else {
+      Alert.alert('Failed to save user data')
+      navigation.navigate('Registration')
+    }
+
+  }
+
 
   return (
     <ImageBackground source={bgImg} resizeMode="cover" style={styles.imageBG}>
@@ -151,7 +169,7 @@ export default function Registration({ navigation }) {
         <MainButton
           title="SAVE"
           style={{ fontFamily: 'AbhayaLibre', marginTop: 25 }}
-          onPress={() => signUp(userData)}
+          onPress={() => onSaveEnteredUserData()}
         />
       </ScrollView>
     </ImageBackground>
