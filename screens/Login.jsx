@@ -1,13 +1,18 @@
 import { StyleSheet, Text, View, TextInput, ImageBackground } from 'react-native';
 import MainButton from '../components/MainButton';
 import bgImg from '../assets/images/bg.png';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { getUsers, userLogin } from './requests';
+import { Toast } from 'toastify-react-native';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Register({ navigation }) {
+  const [userName, setUserName] = useState('')
+  const [userPassword, setUserPassword] = useState('')
+
   const [fontsLoaded] = useFonts({
     'AbhayaLibre': require('../assets/fonts/AbhayaLibre-Bold.ttf'),
     'QwitcherGrypen': require('../assets/fonts/QwitcherGrypen-Bold.ttf'),
@@ -23,6 +28,20 @@ export default function Register({ navigation }) {
     return null;
   }
 
+  const onLoginUser = async () => {
+    const { success: isLoginSuccess, userInfo } = await userLogin({ userName, userPassword })
+    if (isLoginSuccess) {
+      Toast.success('Login successfull!')
+      navigation.navigate('Home', {
+        params: {
+          userInfo
+        },
+      });
+    } else {
+      Toast.error('Failed to login! Password does not match!')
+    }
+  }
+
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
       <ImageBackground source={bgImg} resizeMode="cover" style={styles.imageBG}>
@@ -32,23 +51,21 @@ export default function Register({ navigation }) {
         <View style={{ width: '80%', marginBottom: 20 }}>
           <Text style={{ color: 'white', fontFamily: 'AbhayaLibre', fontSize: 25 }}>Username</Text>
           <TextInput
-            // onChangeText={onChangeText}
-            // value={text}
+            onChangeText={(text) => setUserName(text)}
             style={{ fontFamily: 'AbhayaLibre', fontSize: 25, color: 'white', width: "100%", height: 40, borderBottomWidth: 3, paddingLeft: 15, paddingBottom: 10, marginTop: 15, borderColor: 'white' }}
           />
         </View>
         <View style={{ width: '80%', marginBottom: 100 }}>
           <Text style={{ color: 'white', fontFamily: 'AbhayaLibre', fontSize: 25 }}>Password</Text>
           <TextInput
-            // onChangeText={onChangeText}
-            // value={text}
+            onChangeText={(text) => setUserPassword(text)}
             secureTextEntry={true}
             style={{ fontFamily: 'AbhayaLibre', fontSize: 25, color: 'white', width: "100%", height: 40, borderBottomWidth: 3, paddingLeft: 15, paddingBottom: 10, marginTop: 15, borderColor: 'white' }}
           />
         </View>
 
 
-        <MainButton onPress={() => navigation.navigate('Home')} title="LOG IN" style={{ fontFamily: 'AbhayaLibre', marginBottom: 10 }} />
+        <MainButton onPress={() => onLoginUser()} title="LOG IN" style={{ fontFamily: 'AbhayaLibre', marginBottom: 10 }} />
 
       </ImageBackground>
     </View>

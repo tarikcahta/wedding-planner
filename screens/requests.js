@@ -22,3 +22,43 @@ return {
 }
   }
 }
+
+
+export const getUsers = async () => {
+  try {
+      const responseData = await axios({
+        method: 'get',
+        url: `${WP_API_URL}/users`,
+      })
+
+      return responseData.data
+  } catch(err) {
+    console.log(err)
+    return {
+      success:false
+    }
+  }
+}
+
+
+export const userLogin = async ({userName,userPassword}) => {
+const allUsers = await getUsers()
+
+
+const userByUsername = allUsers.find( user => user.username === userName)
+
+
+if(userByUsername && userByUsername?.password === userPassword) {
+  return {
+    success: true,
+    message: '',
+    userInfo: userByUsername
+  }
+}
+
+return {
+  success: false,
+  message: 'Failed!',
+  userInfo: null
+}
+}
