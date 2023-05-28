@@ -16,7 +16,7 @@ import EditCategoryImageAdmin from '../components/EditCategoryImageAdmin';
 import SubmitBtnAdmin from '../components/SubmitBtnAdmin';
 import { useState } from 'react';
 
-const Summary = ({ navigation }) => {
+const AdminPanelAddNewObject = ({ navigation }) => {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -174,7 +174,7 @@ const Summary = ({ navigation }) => {
   );
 };
 
-export default Summary;
+export default AdminPanelAddNewObject;
 
 const styles = StyleSheet.create({
   pageContainer: {
