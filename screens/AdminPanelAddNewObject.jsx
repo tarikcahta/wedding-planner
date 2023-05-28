@@ -8,6 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import { useFonts } from 'expo-font';
+import * as ImagePicker from 'expo-image-picker';
 import SummaryHeader from '../components/SummaryHeader';
 import AddCategoryBtnAdmin from '../components/AddCategoryBtnAdmin';
 import EditCategoryInfoAdmin from '../components/EditCategoryInfoAdmin';
@@ -15,13 +16,14 @@ import EditCategoryImageAdmin from '../components/EditCategoryImageAdmin';
 import SubmitBtnAdmin from '../components/SubmitBtnAdmin';
 import { useState } from 'react';
 
-const AdminPanelAddNewObject = ({ navigation }) => {
+const Summary = ({ navigation }) => {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [inputModalVisible, setInputModalVisible] = useState(false);
   const [selectedBtn, setSelectedBtn] = useState('');
   const [formData, setFormData] = useState({});
+  const [selectedImg, setSelectedImg] = useState(null);
 
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
@@ -67,11 +69,6 @@ const AdminPanelAddNewObject = ({ navigation }) => {
   };
 
   const handleSubmit = async () => {
-    // const locationData = {
-    //   name,
-    //   address,
-    //   phoneNumber,
-    // };
     if (name && address && phoneNumber) {
       const fullFormData = { ...formData, name, address, phoneNumber };
       Alert.alert('Success', 'Form data submitted successfully!');
@@ -94,7 +91,22 @@ const AdminPanelAddNewObject = ({ navigation }) => {
     if (property === 'name') return (property = 'Name');
 
     return property;
-    // return formData.hasOwnProperty(property) ? formData[property] : property;
+  };
+
+  const handleImagePicker = async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult === false) {
+      console.log('Permission to access gallery is required!');
+      return;
+    }
+
+    const imageResult = await ImagePicker.launchImageLibraryAsync();
+
+    if (!imageResult.cancelled) {
+      setSelectedImg(imageResult.uri);
+    }
   };
 
   return (
@@ -124,14 +136,10 @@ const AdminPanelAddNewObject = ({ navigation }) => {
             onPress={() => handleBtnPress('Phone Number')}
             objProp={getBtnTitle('phoneNumber')}
           />
-          <EditCategoryInfoAdmin objProp={'Image'} />
-          {/* <Text>Name: {formData.name}</Text>
-            <Text>Address: {formData.address}</Text>
-            <Text>Phone Number: {formData.phoneNumber}</Text>
-            {console.log(formData)} */}
-          {/* <EditCategoryImageAdmin
-              objProp={require(`../assets/images/salon1.jpg`)}
-            /> */}
+          <EditCategoryInfoAdmin
+            onPress={handleImagePicker}
+            objProp={'Image'}
+          />
         </View>
         <Modal
           visible={inputModalVisible}
@@ -166,7 +174,7 @@ const AdminPanelAddNewObject = ({ navigation }) => {
   );
 };
 
-export default AdminPanelAddNewObject;
+export default Summary;
 
 const styles = StyleSheet.create({
   pageContainer: {
