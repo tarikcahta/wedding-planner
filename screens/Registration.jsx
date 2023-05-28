@@ -1,14 +1,10 @@
 import {
   StyleSheet,
-  Text,
-  View,
   TextInput,
   ImageBackground,
-  Pressable,
   ScrollView,
 } from 'react-native';
 import MainButton from '../components/MainButton';
-import Button from '../components/Button';
 import bgImg from '../assets/images/bg.png';
 import { useCallback } from 'react';
 import { useFonts } from 'expo-font';
@@ -23,6 +19,7 @@ export default function Registration({ navigation }) {
     name: '',
     surename: '',
     username: '',
+    password: '',
     fianceName: '',
     weddingDate: null,
     budget: null,
@@ -86,6 +83,17 @@ export default function Registration({ navigation }) {
             setUserData({
               ...userData,
               username: text,
+            })
+          }
+        />
+        <TextInput
+          style={styles.textInput}
+          placeholder="Password"
+          placeholderTextColor={'white'}
+          onChangeText={(text) =>
+            setUserData({
+              ...userData,
+              password: text,
             })
           }
         />
