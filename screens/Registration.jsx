@@ -1,11 +1,10 @@
 import { StyleSheet, Text, View, TextInput, ImageBackground, Pressable, ScrollView, Alert } from 'react-native';
 import MainButton from '../components/MainButton';
-import Button from '../components/Button';
 import bgImg from '../assets/images/bg.png';
 import { useCallback } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useState } from 'react'
+import { useState } from 'react';
 import { signUp } from './requests';
 import { Toast } from 'toastify-react-native'
 
@@ -17,14 +16,15 @@ export default function Registration({ navigation }) {
     name: '',
     surename: '',
     username: '',
+    password: '',
     fianceName: '',
     weddingDate: null,
-    budget: null
-  })
+    budget: null,
+  });
 
   const [fontsLoaded] = useFonts({
-    'AbhayaLibre': require('../assets/fonts/AbhayaLibre-Bold.ttf'),
-    'QwitcherGrypen': require('../assets/fonts/QwitcherGrypen-Bold.ttf'),
+    AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
+    QwitcherGrypen: require('../assets/fonts/QwitcherGrypen-Bold.ttf'),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -57,91 +57,131 @@ export default function Registration({ navigation }) {
 
 
   return (
-    <ScrollView style={styles.container} onLayout={onLayoutRootView}>
-      <ImageBackground source={bgImg} resizeMode="cover" style={styles.imageBG}>
+    <ImageBackground source={bgImg} resizeMode="cover" style={styles.imageBG}>
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+        }}
+        style={styles.container}
+        onLayout={onLayoutRootView}
+      >
         <TextInput
           style={styles.textInput}
-          placeholder='Name'
+          placeholder="Name"
+          placeholderTextColor={'white'}
           onChangeText={(text) =>
             setUserData({
               ...userData,
-              name: text
+              name: text,
             })
           }
         />
 
         <TextInput
           style={styles.textInput}
-          placeholder='Surname'
-          onChangeText={(text) => setUserData({
-            ...userData,
-            surename: text
-          })}
+          placeholder="Surname"
+          placeholderTextColor={'white'}
+          onChangeText={(text) =>
+            setUserData({
+              ...userData,
+              surename: text,
+            })
+          }
         />
         <TextInput
           style={styles.textInput}
-          placeholder='Username'
-          onChangeText={(text) => setUserData({
-            ...userData,
-            username: text
-          })}
+          placeholder="Username"
+          placeholderTextColor={'white'}
+          onChangeText={(text) =>
+            setUserData({
+              ...userData,
+              username: text,
+            })
+          }
         />
         <TextInput
           style={styles.textInput}
-          placeholder='Fiances name'
-          onChangeText={(text) => setUserData({
-            ...userData,
-            fianceName: text
-          })}
+          placeholder="Password"
+          placeholderTextColor={'white'}
+          onChangeText={(text) =>
+            setUserData({
+              ...userData,
+              password: text,
+            })
+          }
         />
         <TextInput
           style={styles.textInput}
-          placeholder='Wedding date'
-          onChangeText={(text) => setUserData({
-            ...userData,
-            weddingDate: text
-          })}
+          placeholder="Fiances name"
+          placeholderTextColor={'white'}
+          onChangeText={(text) =>
+            setUserData({
+              ...userData,
+              fianceName: text,
+            })
+          }
+        />
+        <TextInput
+          style={styles.textInput}
+          placeholder="Wedding date"
+          placeholderTextColor={'white'}
+          onChangeText={(text) =>
+            setUserData({
+              ...userData,
+              weddingDate: text,
+            })
+          }
         />
 
         <TextInput
           style={styles.textInput}
-          placeholder='Budget'
-          onChangeText={(text) => setUserData({
-            ...userData,
-            budget: text
-          })}
+          placeholder="Budget"
+          placeholderTextColor={'white'}
+          onChangeText={(text) =>
+            setUserData({
+              ...userData,
+              budget: text,
+            })
+          }
         />
-        <MainButton title="Save" style={{ fontFamily: 'AbhayaLibre', marginBottom: 10 }} onPress={() => onSaveEnteredUserData()} />
-      </ImageBackground>
-    </ScrollView>
+        <MainButton
+          title="SAVE"
+          style={{ fontFamily: 'AbhayaLibre', marginTop: 25 }}
+          onPress={() => onSaveEnteredUserData()}
+        />
+      </ScrollView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: 10000,
-    backgroundImage: { bgImg },
+    width: '100%',
+    // justifyContent: 'center',
   },
   imageBG: {
     flex: 1,
+    resizeMode: 'cover',
     justifyContent: 'center',
     alignItems: 'center',
-    width: "100%",
+    width: '100%',
   },
   textInput: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: 'bold',
+    width: '90%',
+    fontSize: 26,
     letterSpacing: 0.8,
     fontFamily: 'AbhayaLibre',
-    backgroundColor: 'rgba(196, 157, 98, 0.59);',
     padding: 8,
-    marginTop: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 77,
-    backgroundColor: 'transparent',
+    marginTop: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 70,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
     color: 'white',
-  }
+    textAlign: 'center',
+  },
 });
