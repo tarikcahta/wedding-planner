@@ -16,8 +16,10 @@ import EditCategoryBtnAdmin from '../components/EditCategoryBtnAdmin';
 import EditCategoryInfoAdmin from '../components/EditCategoryInfoAdmin';
 import EditCategoryImageAdmin from '../components/EditCategoryImageAdmin';
 import SubmitBtnAdmin from '../components/SubmitBtnAdmin';
+import { editItem } from './requests';
+import { Toast } from 'toastify-react-native';
 
-const AdminPanelEditObject = ({ navigation }) => {
+const AdminPanelEditObject = ({ navigation, route }) => {
   const [name, setName] = useState('Salon vjenčanica i svečanih haljina');
   const [address, setAddress] = useState(
     'Otoka, Džemala Bijedića 25/E Sarajevo'
@@ -40,9 +42,6 @@ const AdminPanelEditObject = ({ navigation }) => {
     navigation.navigate('Summary');
   };
 
-  const handleSearch = () => {
-    navigation.navigate('SearchResults');
-  };
 
   const handleBtnPress = (buttonLabel) => {
     setSelectedBtn(buttonLabel);
@@ -71,7 +70,10 @@ const AdminPanelEditObject = ({ navigation }) => {
     setSelectedBtn('');
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (navigation) => {
+    const targetId = route.params?.categoryId
+    const ctgName = route.params?.categoryName
+
     if (name && address && phoneNumber) {
       const fullFormData = {
         ...formData,
@@ -80,7 +82,26 @@ const AdminPanelEditObject = ({ navigation }) => {
         phoneNumber,
         selectedImg,
       };
-      Alert.alert('Success', 'Form data submitted successfully!');
+
+
+
+      const formattedData =
+      {
+        companyName: fullFormData.name,
+        location: fullFormData.address,
+        phoneNumber,
+        imageUrl: '',
+        isExpensive: true,
+      }
+
+      const response = await editItem(formattedData, targetId)
+
+      if (response.success) {
+        navigation.navigate('AdminPanel', {
+          categoryName: ctgName
+        })
+        Toast.success('Form data changed successfully!')
+      }
     } else {
       Alert.alert('Error', 'Please fill in all fields!');
     }
@@ -131,7 +152,7 @@ const AdminPanelEditObject = ({ navigation }) => {
         </View>
 
         <View>
-          <EditCategoryBtnAdmin title={'DRESSES'} />
+          <EditCategoryBtnAdmin title={'Dresses'} />
           <EditCategoryInfoAdmin
             objProp={getBtnTitle('name')}
             onPress={() => handleBtnPress('Name')}
@@ -177,8 +198,8 @@ const AdminPanelEditObject = ({ navigation }) => {
                   selectedBtn === 'Name'
                     ? name
                     : selectedBtn === 'Address'
-                    ? address
-                    : phoneNumber
+                      ? address
+                      : phoneNumber
                 }
                 onChangeText={handleInputChange}
               />
@@ -187,7 +208,7 @@ const AdminPanelEditObject = ({ navigation }) => {
           </View>
         </Modal>
         <View style={styles.btnPosition}>
-          <TouchableOpacity onPress={handleSubmit} style={styles.btnStyle}>
+          <TouchableOpacity onPress={() => handleSubmit(navigation)} style={styles.btnStyle}>
             <Text style={styles.btnText}>EDIT</Text>
           </TouchableOpacity>
         </View>

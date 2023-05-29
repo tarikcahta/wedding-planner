@@ -1,9 +1,27 @@
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { useFonts } from 'expo-font';
 import SummaryHeader from '../components/SummaryHeader';
 import LocationContainerAdmin from '../components/LocationContainerAdmin';
+import { useEffect, useState } from 'react';
+import { getItemsByCategory } from './requests';
 
-const AdminPanelCategory = () => {
+const AdminPanelCategory = ({ route, navigation }) => {
+  const [shopItems, setItems] = useState([])
+
+  useEffect(() => {
+    const loadData = async () => {
+
+      const res = await getItemsByCategory(route.params?.categoryName)
+      setItems(res)
+    };
+    loadData();
+  }, [route.params]);
+
+
+
+  const paramData = route.params
+  const categoryName = paramData ? paramData.categoryName : 'ADMIN'
+
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
   });
@@ -12,46 +30,32 @@ const AdminPanelCategory = () => {
     return null;
   }
 
-  const location = [
-    (locationOne = {
-      title: 'Salon vjenčanica i svečanih haljina',
-      address: 'Otoka, Džemala Bijedića 25/E Sarajevo',
-      workHoursOpened: 'Open',
-      workHoursTime: ' close 8pm',
-      phoneNumber: '061 143 950',
-      image: require('../assets/images/salon1.jpg'),
-    }),
-    (locationTwo = {
-      title: 'Atelier Sposa',
-      address: 'Azize Šaćirbegović 80c',
-      workHoursOpened: 'Open',
-      workHoursTime: ' close 8pm',
-      phoneNumber: '060 30 30 388',
-      image: require('../assets/images/salon2.jpg'),
-    }),
-    (locationThree = {
-      title: 'Salon vjenčanica Graziosa Sposa',
-      address: 'Zagrebačka 75',
-      workHoursOpened: 'Open',
-      workHoursTime: ' close 8pm',
-      phoneNumber: '062 014 708',
-      image: require('../assets/images/salon3.jpg'),
-    }),
-  ];
+  const onEditItemInfo = (itemId) => {
+    navigation.navigate('admin/edit', {
+      categoryId: itemId,
+      categoryName
+    })
+  }
+
 
   return (
     <View style={styles.pageContainer}>
-      <SummaryHeader title={'ADMIN'} />
+      <SummaryHeader title={categoryName.toUpperCase()} onPress={() => navigation.navigate('AdminPanel')} />
       <View style={styles.mainBody}>
-        {location.map((loc) => (
-          <LocationContainerAdmin
-            key={loc.title}
-            title={loc.title}
-            image={loc.image}
-          />
-        ))}
+        <ScrollView>
+          {shopItems.length > 0 && shopItems.map((loc) => (
+            <LocationContainerAdmin
+              key={loc.id}
+              title={loc.companyName}
+              imageUrl={loc.imageUrl}
+              itemId={loc.id}
+              onEditPress={onEditItemInfo}
+            />
+          ))}
+
+        </ScrollView>
         <View style={styles.btnPosition}>
-          <TouchableOpacity style={styles.btnStyle}>
+          <TouchableOpacity style={styles.btnStyle} onPress={() => navigation.navigate(`admin/create`)}>
             <Text style={styles.btnText}>ADD NEW</Text>
           </TouchableOpacity>
         </View>

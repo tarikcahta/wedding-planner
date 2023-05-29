@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useFonts } from 'expo-font';
+import { TextInput } from 'react-native-gesture-handler';
 
 const EditCategoryInfoAdmin = ({ objProp, onPress }) => {
   const [fontsLoaded] = useFonts({
@@ -12,9 +13,9 @@ const EditCategoryInfoAdmin = ({ objProp, onPress }) => {
 
   return (
     <View style={styles.btnPosition}>
-      <TouchableOpacity onPress={onPress} 
-      style={styles.btnStyle}>
-        <Text style={styles.btnText}>{objProp}</Text>
+      <TouchableOpacity onPress={onPress}
+        style={styles.btnStyle}>
+        <TextInput style={styles.btnText} placeholder={objProp} />
       </TouchableOpacity>
     </View>
   );

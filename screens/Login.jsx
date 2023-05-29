@@ -29,14 +29,20 @@ export default function Register({ navigation }) {
   }
 
   const onLoginUser = async () => {
-    const { success: isLoginSuccess, userInfo } = await userLogin({ userName, userPassword })
+    const { success: isLoginSuccess, userInfo, isAdmin } = await userLogin({ userName, userPassword })
+    console.log(">>USER Admin", isAdmin)
     if (isLoginSuccess) {
       Toast.success('Login successfull!')
-      navigation.navigate('Home', {
+      isAdmin ? navigation.navigate('AdminPanel', {
         params: {
           userInfo
         },
-      });
+      }) :
+        navigation.navigate('Home', {
+          params: {
+            userInfo
+          },
+        });
     } else {
       Toast.error('Failed to login! Password does not match!')
     }

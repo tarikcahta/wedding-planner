@@ -14,6 +14,7 @@ import SummaryHeader from '../components/SummaryHeader';
 import EditCategoryInfoAdmin from '../components/EditCategoryInfoAdmin';
 import SubmitBtnAdmin from '../components/SubmitBtnAdmin';
 import { useState } from 'react';
+import { createNewItem } from './requests';
 
 const AdminPanelAddNewObject = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -74,6 +75,26 @@ const AdminPanelAddNewObject = ({ navigation }) => {
   const handleSubmit = async () => {
     if (name && address && phoneNumber) {
       const fullFormData = { ...formData, name, address, phoneNumber };
+
+
+      const formattedData =
+      {
+        companyName: fullFormData.name,
+        location: fullFormData.address,
+        phoneNumber,
+        imageUrl: '',
+        isExpensive: true,
+        category: selectedOption,
+      }
+
+      const response = await createNewItem(formattedData)
+
+      if (response.success) {
+        navigation.navigate('AdminPanel', {
+          categoryName: selectedOption
+        })
+      }
+
       Alert.alert('Success', 'Form data submitted successfully!');
     } else {
       Alert.alert('Error', 'Please fill in all fields!');
@@ -212,8 +233,8 @@ const AdminPanelAddNewObject = ({ navigation }) => {
                   selectedBtn === 'Name'
                     ? name
                     : selectedBtn === 'Address'
-                    ? address
-                    : phoneNumber
+                      ? address
+                      : phoneNumber
                 }
                 onChangeText={handleInputChange}
               />

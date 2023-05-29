@@ -5,12 +5,9 @@ import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native';
 
 const LocationContainerAdmin = ({
   title,
-  address,
-  hoursOpened,
-  hoursClosed,
-  workHoursTime,
-  phoneNumber,
-  image,
+  itemId,
+  imageUrl,
+  onEditPress
 }) => {
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
@@ -20,26 +17,18 @@ const LocationContainerAdmin = ({
     return null;
   }
 
-  //   const isOpen = (hoursOpened, hoursClosed) => {
-  //     let currentTime = new Date().getHours();
-  //     if (currentTime >= hoursOpened && currentTime < hoursClosed) {
-  //       return true;
-  //     } else {
-  //       return false;
-  //     }
-  //   };
 
   return (
     <View style={styles.locations}>
       <View style={styles.locationContainer}>
-        <Image source={image} />
+        <Image source={require('../assets/images/salon1.jpg')} />
 
         <View style={styles.rightSideLocationsStyles}>
           <View style={styles.headerTextStylesContainer}>
             <Text style={styles.headerTextStyles}>{title}</Text>
           </View>
           <View style={styles.infoBody}>
-            <TouchableOpacity style={styles.btnStyle}>
+            <TouchableOpacity style={styles.btnStyle} onPress={() => onEditPress(itemId)}>
               <Text style={styles.btnText}>EDIT</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.btnStyle}>

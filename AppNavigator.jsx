@@ -19,10 +19,14 @@ import Decoration from './screens/SummaryCategories/Decoration.jsx';
 import Invitations from './screens/SummaryCategories/Invitations.jsx';
 import Cake from './screens/SummaryCategories/Cake.jsx';
 import CarRental from './screens/SummaryCategories/CarRental.jsx';
+import AdminPanelMain from './screens/AdminPanelMain.jsx'
 
+import AdminPanelCategory from './screens/AdminPanelCategory.jsx'
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import ToastManager from 'toastify-react-native';
+import AdminPanelAddNewObject from './screens/AdminPanelAddNewObject.jsx';
+import AdminPanelEditObject from './screens/AdminPanelEditObject.jsx';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -49,6 +53,12 @@ function Root() {
       <Drawer.Screen name="Wish list" component={WishList} options={{ headerShown: false }} />
 
       <Drawer.Screen name="Log out" component={Login} options={{ headerShown: true, drawerItemStyle: { display: 'none' }, drawerItemStyle: { backgroundColor: 'rgba(144, 104, 40, 0.47)', marginTop: 250 }, }} />
+
+      <Stack.Screen name="AdminPanel" component={AdminPanelMain} options={{ drawerItemStyle: { display: 'none' } }} />
+      <Stack.Screen name="admin/category" component={AdminPanelCategory} options={{ drawerItemStyle: { display: 'none' } }} />
+      <Stack.Screen name="admin/create" component={AdminPanelAddNewObject} options={{ drawerItemStyle: { display: 'none' } }} />
+      <Stack.Screen name="admin/edit" component={AdminPanelEditObject} options={{ drawerItemStyle: { display: 'none' } }} />
+
 
 
       <Stack.Screen name="Dresses" component={Dresses} options={{ drawerItemStyle: { display: 'none' } }} />
