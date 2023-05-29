@@ -4,7 +4,7 @@ import LocationContainer from '../components/LocationContainer';
 import PopUpWindow from '../components/PopUpWindow';
 import { useState } from 'react';
 
-const SearchResults = () => {
+const SearchResults = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const location = [
@@ -33,14 +33,23 @@ const SearchResults = () => {
       image: require('../assets/images/salon3.jpg'),
     }),
   ];
+
   const handleModalVisibility = () => {
     setIsModalVisible(!isModalVisible);
+  };
+
+  const handleBackIcon = () => {
+    navigation.navigate('Summary');
   };
 
   return (
     <View style={styles.pageContainer}>
       <View style={styles.pageHeader}>
-        <SummaryHeader title={'SUMMARY'} />
+        <SummaryHeader
+          onPress={handleBackIcon}
+          title={'SUMMARY'}
+          onPressDrawer={() => navigation.openDrawer()}
+        />
       </View>
       <View style={styles.mainBody}>
         <View style={styles.mBCategories}>
