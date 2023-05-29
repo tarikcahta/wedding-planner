@@ -6,13 +6,12 @@ import {
   TextInput,
   Modal,
   Alert,
+  FlatList,
 } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as ImagePicker from 'expo-image-picker';
 import SummaryHeader from '../components/SummaryHeader';
-import AddCategoryBtnAdmin from '../components/AddCategoryBtnAdmin';
 import EditCategoryInfoAdmin from '../components/EditCategoryInfoAdmin';
-import EditCategoryImageAdmin from '../components/EditCategoryImageAdmin';
 import SubmitBtnAdmin from '../components/SubmitBtnAdmin';
 import { useState } from 'react';
 
@@ -24,6 +23,10 @@ const AdminPanelAddNewObject = ({ navigation }) => {
   const [selectedBtn, setSelectedBtn] = useState('');
   const [formData, setFormData] = useState({});
   const [selectedImg, setSelectedImg] = useState(null);
+
+  // category button picker
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
@@ -109,6 +112,24 @@ const AdminPanelAddNewObject = ({ navigation }) => {
     }
   };
 
+  const options = [
+    'Dresses',
+    'Suits',
+    'Venues',
+    'Photo / Video',
+    'Music',
+    'Catering',
+    'Decorations',
+    'Invitations',
+    'Cake',
+    'Car rental',
+  ];
+
+  const handleOptionSelect = (option) => {
+    setSelectedOption(option);
+    setIsModalVisible(false);
+  };
+
   return (
     <View style={styles.pageContainer}>
       <SummaryHeader
@@ -123,7 +144,43 @@ const AdminPanelAddNewObject = ({ navigation }) => {
         </View>
 
         <View>
-          <AddCategoryBtnAdmin />
+          {/* <AddCategoryBtnAdmin /> */}
+          <View style={styles.catBtnStyle}>
+            <TouchableOpacity
+              onPress={() => setIsModalVisible(true)}
+              style={styles.catBtnStyling}
+            >
+              <Text style={styles.catBtnTextStyle}>
+                {selectedOption || 'Category'}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Modal to display options */}
+            <Modal
+              visible={isModalVisible}
+              animationType="slide"
+              transparent={true}
+            >
+              <View style={styles.modalContainerCatBtn}>
+                <View style={styles.modalContentCatBtn}>
+                  {/* List of options */}
+                  <FlatList
+                    data={options}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        style={styles.optionsCatStyle}
+                        // key={option}
+                        onPress={() => handleOptionSelect(item)}
+                      >
+                        <Text style={styles.optionCatText}>{item}</Text>
+                      </TouchableOpacity>
+                    )}
+                    keyExtractor={(item) => item}
+                  />
+                </View>
+              </View>
+            </Modal>
+          </View>
           <EditCategoryInfoAdmin
             objProp={getBtnTitle('name')}
             onPress={() => handleBtnPress('Name')}
@@ -257,5 +314,51 @@ const styles = StyleSheet.create({
     marginTop: 8,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  catBtnStyle: {
+    marginTop: 25,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  catBtnStyling: {
+    width: '87%',
+    backgroundColor: 'rgba(196, 157, 98, 0.59);',
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  catBtnTextStyle: {
+    color: 'white',
+    fontSize: 28,
+    fontFamily: 'AbhayaLibre',
+    letterSpacing: 4,
+  },
+  optionsCatStyle: {
+    width: '100%',
+    backgroundColor: 'rgba(196, 157, 98, 0.59);',
+    padding: 8,
+    marginTop: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  optionCatText: {
+    color: 'white',
+    fontSize: 25,
+    fontFamily: 'AbhayaLibre',
+  },
+  modalContainerCatBtn: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContentCatBtn: {
+    backgroundColor: 'rgb(228, 220, 220)',
+    padding: 20,
+    borderRadius: 5,
+    width: '90%',
+    height: 500,
   },
 });
