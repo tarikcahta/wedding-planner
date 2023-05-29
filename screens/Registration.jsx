@@ -20,6 +20,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function Registration({ navigation }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState()
   const [userData, setUserData] = useState({
     name: '',
     surename: '',
@@ -49,10 +50,14 @@ export default function Registration({ navigation }) {
     setShowDatePicker(true);
   };
 
-  const handleDateChange = (event, selectedDate) => {
+  const handleDateChange = (_, selectedDate) => {
+    setSelectedDate(selectedDate)
     if (selectedDate) {
-      console.log(selectedDate);
       setShowDatePicker(false);
+      setUserData({
+        ...userData,
+        weddingDate: selectedDate
+      })
     }
   };
   const onSaveEnteredUserData = async () => {
@@ -71,6 +76,7 @@ export default function Registration({ navigation }) {
 
   }
 
+  const displayDateText = selectedDate ? `${selectedDate.toLocaleDateString("en-US")}` : 'Wedding date'
 
   return (
     <ImageBackground source={bgImg} resizeMode="cover" style={styles.imageBG}>
@@ -142,11 +148,12 @@ export default function Registration({ navigation }) {
         />
 
         <TouchableOpacity onPress={handlePress} style={styles.textInput}>
-          <Text style={styles.txtStyle}>Wedding Date</Text>
+          <Text style={styles.txtStyle}>{displayDateText}</Text>
         </TouchableOpacity>
         {showDatePicker && (
           <DateTimePicker
-            value={new Date()}
+            minimumDate={new Date()}
+            value={selectedDate || new Date()}
             mode="date"
             display="default"
             onChange={handleDateChange}
