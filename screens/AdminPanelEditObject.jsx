@@ -1,11 +1,33 @@
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  Modal,
+  TextInput,
+  Alert,
+  Image,
+} from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { useFonts } from 'expo-font';
+import { useState } from 'react';
 import SummaryHeader from '../components/SummaryHeader';
 import EditCategoryBtnAdmin from '../components/EditCategoryBtnAdmin';
 import EditCategoryInfoAdmin from '../components/EditCategoryInfoAdmin';
 import EditCategoryImageAdmin from '../components/EditCategoryImageAdmin';
+import SubmitBtnAdmin from '../components/SubmitBtnAdmin';
 
 const AdminPanelEditObject = ({ navigation }) => {
+  const [name, setName] = useState('Salon vjenčanica i svečanih haljina');
+  const [address, setAddress] = useState(
+    'Otoka, Džemala Bijedića 25/E Sarajevo'
+  );
+  const [phoneNumber, setPhoneNumber] = useState('061 143 950');
+  const [inputModalVisible, setInputModalVisible] = useState(false);
+  const [selectedBtn, setSelectedBtn] = useState('');
+  const [formData, setFormData] = useState({});
+  const [selectedImg, setSelectedImg] = useState(null);
+
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
   });
@@ -20,6 +42,80 @@ const AdminPanelEditObject = ({ navigation }) => {
 
   const handleSearch = () => {
     navigation.navigate('SearchResults');
+  };
+
+  const handleBtnPress = (buttonLabel) => {
+    setSelectedBtn(buttonLabel);
+    setInputModalVisible(true);
+  };
+
+  const handleInputChange = (text) => {
+    if (selectedBtn === 'Name') {
+      setName(text);
+    } else if (selectedBtn === 'Address') {
+      setAddress(text);
+    } else if (selectedBtn === 'Phone Number') {
+      setPhoneNumber(text);
+    }
+  };
+
+  const handlePropertySubmit = () => {
+    if (selectedBtn === 'Name') {
+      setFormData((prevData) => ({ ...prevData, name }));
+    } else if (selectedBtn === 'Address') {
+      setFormData((prevData) => ({ ...prevData, address }));
+    } else if (selectedBtn === 'Phone Number') {
+      setFormData((prevData) => ({ ...prevData, phoneNumber }));
+    }
+    setInputModalVisible(false);
+    setSelectedBtn('');
+  };
+
+  const handleSubmit = async () => {
+    if (name && address && phoneNumber) {
+      const fullFormData = {
+        ...formData,
+        name,
+        address,
+        phoneNumber,
+        selectedImg,
+      };
+      Alert.alert('Success', 'Form data submitted successfully!');
+    } else {
+      Alert.alert('Error', 'Please fill in all fields!');
+    }
+    // send location data to server
+    // -- CODE --
+  };
+
+  const getBtnTitle = (property) => {
+    if (formData.hasOwnProperty(property)) {
+      const value = formData[property];
+      if (value) {
+        return value;
+      }
+    }
+    if (property === 'phoneNumber') return (property = phoneNumber);
+    if (property === 'address') return (property = address);
+    if (property === 'name') return (property = name);
+
+    return property;
+  };
+
+  const handleImagePicker = async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult === false) {
+      console.log('Permission to access gallery is required!');
+      return;
+    }
+
+    const imageResult = await ImagePicker.launchImageLibraryAsync();
+    if (!imageResult.cancelled) {
+      setSelectedImg(imageResult.uri);
+      console.log(imageResult.uri);
+    }
   };
 
   return (
@@ -37,18 +133,61 @@ const AdminPanelEditObject = ({ navigation }) => {
         <View>
           <EditCategoryBtnAdmin title={'DRESSES'} />
           <EditCategoryInfoAdmin
-            objProp={'Salon vjenčanica i svečanih haljina'}
+            objProp={getBtnTitle('name')}
+            onPress={() => handleBtnPress('Name')}
           />
           <EditCategoryInfoAdmin
-            objProp={'Otoka, Džemala Bijedića 25/E Sarajevo'}
+            objProp={getBtnTitle('address')}
+            onPress={() => handleBtnPress('Address')}
           />
-          <EditCategoryInfoAdmin objProp={'061 143 950'} />
-          <EditCategoryImageAdmin
-            objProp={require(`../assets/images/salon1.jpg`)}
+          <EditCategoryInfoAdmin
+            onPress={() => handleBtnPress('Phone Number')}
+            objProp={getBtnTitle('phoneNumber')}
           />
+
+          <View style={styles.btnPosition}>
+            {selectedImg ? (
+              <TouchableOpacity
+                style={styles.imgBtn}
+                onPress={handleImagePicker}
+              >
+                <Image source={{ uri: selectedImg }} style={styles.img} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.btnStyleImg}
+                onPress={handleImagePicker}
+              >
+                <Text style={styles.btnText}>Image</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
+        <Modal
+          visible={inputModalVisible}
+          animationType="slide"
+          transparent={true}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <TextInput
+                style={styles.optionsStyle}
+                placeholder={`Enter ${selectedBtn}`}
+                value={
+                  selectedBtn === 'Name'
+                    ? name
+                    : selectedBtn === 'Address'
+                    ? address
+                    : phoneNumber
+                }
+                onChangeText={handleInputChange}
+              />
+              <SubmitBtnAdmin onPress={() => handlePropertySubmit()} />
+            </View>
+          </View>
+        </Modal>
         <View style={styles.btnPosition}>
-          <TouchableOpacity style={styles.btnStyle}>
+          <TouchableOpacity onPress={handleSubmit} style={styles.btnStyle}>
             <Text style={styles.btnText}>EDIT</Text>
           </TouchableOpacity>
         </View>
@@ -69,16 +208,29 @@ const styles = StyleSheet.create({
     flex: 4,
     width: '100%',
   },
-  btnPosition: {
-    width: '96%',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+  img: {
+    width: '30%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 70,
   },
   btnStyle: {
     marginTop: 20,
     width: '36%',
     backgroundColor: 'rgba(196, 157, 98, 0.59);',
     paddingVertical: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btnStyleImg: {
+    width: '93%',
+    backgroundColor: 'rgba(196, 157, 98, 0.59);',
+    height: 53,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imgBtn: {
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -104,19 +256,35 @@ const styles = StyleSheet.create({
     width: '93%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    marginTop: 30,
   },
-  btnStyle: {
-    marginTop: 20,
-    width: '36%',
-    backgroundColor: 'rgba(196, 157, 98, 0.59);',
-    paddingVertical: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+
   btnText: {
     color: 'white',
     fontSize: 18,
     fontFamily: 'AbhayaLibre',
     letterSpacing: 2,
+  },
+  modalContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'rgb(228, 220, 220)',
+    padding: 20,
+    borderRadius: 5,
+    width: '90%',
+    height: 180,
+    justifyContent: 'space-around',
+  },
+  optionsStyle: {
+    width: '100%',
+    backgroundColor: 'rgba(196, 157, 98, 0.59);',
+    padding: 8,
+    marginTop: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
