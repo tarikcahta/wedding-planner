@@ -58,8 +58,6 @@ export default function Registration({ navigation }) {
   const onSaveEnteredUserData = async () => {
     const { success, userInfo } = await signUp(userData)
     if (success) {
-      console.log(">>>", userInfo)
-
       navigation.navigate('Home', {
         params: {
           userInfo
