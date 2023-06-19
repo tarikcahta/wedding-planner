@@ -3,32 +3,29 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  Modal,
   TextInput,
   Alert,
   Image,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useFonts } from 'expo-font';
-import { useState } from 'react';
-import SummaryHeader from '../components/SummaryHeader';
-import EditCategoryBtnAdmin from '../components/EditCategoryBtnAdmin';
-import EditCategoryInfoAdmin from '../components/EditCategoryInfoAdmin';
-import EditCategoryImageAdmin from '../components/EditCategoryImageAdmin';
-import SubmitBtnAdmin from '../components/SubmitBtnAdmin';
+import { useState, useEffect } from 'react';
+import AdminHeader from '../components/AdminHeader';
 import { editItem } from './requests';
 import { Toast } from 'toastify-react-native';
 
 const AdminPanelEditObject = ({ navigation, route }) => {
-  const [name, setName] = useState('Salon vjenčanica i svečanih haljina');
-  const [address, setAddress] = useState(
-    'Otoka, Džemala Bijedića 25/E Sarajevo'
-  );
-  const [phoneNumber, setPhoneNumber] = useState('061 143 950');
-  const [inputModalVisible, setInputModalVisible] = useState(false);
-  const [selectedBtn, setSelectedBtn] = useState('');
-  const [formData, setFormData] = useState({});
+  const { itemId, shopData, categoryName } = route.params;
+  const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedImg, setSelectedImg] = useState(null);
+
+  useEffect(() => {
+    setName(shopData.companyName);
+    setAddress(shopData.location);
+    setPhoneNumber(shopData.phoneNumber);
+  }, [shopData]);
 
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
@@ -39,88 +36,29 @@ const AdminPanelEditObject = ({ navigation, route }) => {
   }
 
   const handlePress = () => {
-    navigation.navigate('Summary');
-  };
-
-
-  const handleBtnPress = (buttonLabel) => {
-    setSelectedBtn(buttonLabel);
-    setInputModalVisible(true);
-  };
-
-  const handleInputChange = (text) => {
-    if (selectedBtn === 'Name') {
-      setName(text);
-    } else if (selectedBtn === 'Address') {
-      setAddress(text);
-    } else if (selectedBtn === 'Phone Number') {
-      setPhoneNumber(text);
-    }
-  };
-
-  const handlePropertySubmit = () => {
-    if (selectedBtn === 'Name') {
-      setFormData((prevData) => ({ ...prevData, name }));
-    } else if (selectedBtn === 'Address') {
-      setFormData((prevData) => ({ ...prevData, address }));
-    } else if (selectedBtn === 'Phone Number') {
-      setFormData((prevData) => ({ ...prevData, phoneNumber }));
-    }
-    setInputModalVisible(false);
-    setSelectedBtn('');
+    navigation.navigate('admin/category', { categoryName: shopData.category });
   };
 
   const handleSubmit = async (navigation) => {
-    const targetId = route.params?.categoryId
-    const ctgName = route.params?.categoryName
+    const targetId = shopData.id;
 
-    if (name && address && phoneNumber) {
-      const fullFormData = {
-        ...formData,
-        name,
-        address,
-        phoneNumber,
-        selectedImg,
-      };
+    const formattedData = {
+      companyName: name,
+      location: address,
+      phoneNumber,
+      // imageUrl: 'some url',
+      isExpensive: true,
+    };
 
+    const response = await editItem(formattedData, targetId);
 
-
-      const formattedData =
-      {
-        companyName: fullFormData.name,
-        location: fullFormData.address,
-        phoneNumber,
-        imageUrl: '',
-        isExpensive: true,
-      }
-
-      const response = await editItem(formattedData, targetId)
-
-      if (response.success) {
-        navigation.navigate('AdminPanel', {
-          categoryName: ctgName
-        })
-        Toast.success('Form data changed successfully!')
-      }
+    if (response.success) {
+      navigation.navigate('AdminPanel');
+      Toast.success('Form data changed successfully!');
     } else {
       Alert.alert('Error', 'Please fill in all fields!');
+      console.log(shopData.id);
     }
-    // send location data to server
-    // -- CODE --
-  };
-
-  const getBtnTitle = (property) => {
-    if (formData.hasOwnProperty(property)) {
-      const value = formData[property];
-      if (value) {
-        return value;
-      }
-    }
-    if (property === 'phoneNumber') return (property = phoneNumber);
-    if (property === 'address') return (property = address);
-    if (property === 'name') return (property = name);
-
-    return property;
   };
 
   const handleImagePicker = async () => {
@@ -139,77 +77,81 @@ const AdminPanelEditObject = ({ navigation, route }) => {
     }
   };
 
+  const handleTextChange = (text, propertyName) => {
+    if (propertyName === 'Name') {
+      setName(text);
+    } else if (propertyName === 'Address') {
+      setAddress(text);
+    } else if (propertyName === 'Phone Number') {
+      setPhoneNumber(text);
+    }
+  };
+
   return (
     <View style={styles.pageContainer}>
-      <SummaryHeader
-        onPress={handlePress}
-        onPressDrawer={() => navigation.openDrawer()}
-      />
+      <AdminHeader onPress={handlePress} />
 
       <View style={styles.mainBody}>
         <View style={styles.mBCategories}>
           <Text style={styles.mBCategoriesTxt}>EDIT</Text>
         </View>
 
-        <View>
-          <EditCategoryBtnAdmin title={'Dresses'} />
-          <EditCategoryInfoAdmin
-            objProp={getBtnTitle('name')}
-            onPress={() => handleBtnPress('Name')}
-          />
-          <EditCategoryInfoAdmin
-            objProp={getBtnTitle('address')}
-            onPress={() => handleBtnPress('Address')}
-          />
-          <EditCategoryInfoAdmin
-            onPress={() => handleBtnPress('Phone Number')}
-            objProp={getBtnTitle('phoneNumber')}
-          />
-
-          <View style={styles.btnPosition}>
-            {selectedImg ? (
-              <TouchableOpacity
-                style={styles.imgBtn}
-                onPress={handleImagePicker}
-              >
-                <Image source={{ uri: selectedImg }} style={styles.img} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={styles.btnStyleImg}
-                onPress={handleImagePicker}
-              >
-                <Text style={styles.btnText}>Image</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+        {/* Category Name */}
+        <View style={styles.catBtnStyle}>
+          <TouchableOpacity style={styles.catBtnStyling}>
+            <Text style={styles.catBtnTextStyle}>{categoryName}</Text>
+          </TouchableOpacity>
         </View>
-        <Modal
-          visible={inputModalVisible}
-          animationType="slide"
-          transparent={true}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <TextInput
-                style={styles.optionsStyle}
-                placeholder={`Enter ${selectedBtn}`}
-                value={
-                  selectedBtn === 'Name'
-                    ? name
-                    : selectedBtn === 'Address'
-                      ? address
-                      : phoneNumber
-                }
-                onChangeText={handleInputChange}
-              />
-              <SubmitBtnAdmin onPress={() => handlePropertySubmit()} />
-            </View>
-          </View>
-        </Modal>
+
+        {/* Shop data input */}
+        <View style={styles.viewStyle}>
+          <TextInput
+            style={styles.textInputStyle}
+            placeholder={name}
+            value={name}
+            placeholderTextColor={'white'}
+            onChangeText={(text) => handleTextChange(text, 'Name')}
+          />
+        </View>
+        <View style={styles.viewStyle}>
+          <TextInput
+            style={styles.textInputStyle}
+            placeholder={address}
+            value={address}
+            placeholderTextColor={'white'}
+            onChangeText={(text) => handleTextChange(text, 'Address')}
+          />
+        </View>
+
+        <View style={styles.viewStyle}>
+          <TextInput
+            style={styles.textInputStyle}
+            placeholder={phoneNumber}
+            value={phoneNumber}
+            placeholderTextColor={'white'}
+            onChangeText={(text) => handleTextChange(text, 'Phone Number')}
+          />
+        </View>
         <View style={styles.btnPosition}>
-          <TouchableOpacity onPress={() => handleSubmit(navigation)} style={styles.btnStyle}>
-            <Text style={styles.btnText}>EDIT</Text>
+          {selectedImg ? (
+            <TouchableOpacity style={styles.imgBtn} onPress={handleImagePicker}>
+              <Image source={{ uri: selectedImg }} style={styles.img} />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.btnStyleImg}
+              onPress={handleImagePicker}
+            >
+              <Text style={styles.btnText}>Image</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={styles.editBtn}>
+          <TouchableOpacity
+            onPress={() => handleSubmit(navigation)}
+            style={styles.editBtnStyle}
+          >
+            <Text style={styles.editBtnText}>EDIT</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -236,8 +178,9 @@ const styles = StyleSheet.create({
     height: 70,
   },
   btnStyle: {
+    textAlign: 'center',
     marginTop: 20,
-    width: '36%',
+    width: '100%',
     backgroundColor: 'rgba(196, 157, 98, 0.59);',
     paddingVertical: 12,
     justifyContent: 'center',
@@ -279,13 +222,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginTop: 30,
   },
-
-  btnText: {
-    color: 'white',
-    fontSize: 18,
-    fontFamily: 'AbhayaLibre',
-    letterSpacing: 2,
-  },
   modalContainer: {
     flex: 1,
     alignItems: 'center',
@@ -307,5 +243,89 @@ const styles = StyleSheet.create({
     marginTop: 8,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  viewStyle: {
+    marginTop: 25,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textInputStyle: {
+    width: '87%',
+    backgroundColor: 'rgba(196, 157, 98, 0.59);',
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    fontSize: 18,
+    fontFamily: 'AbhayaLibre',
+    color: 'white',
+  },
+  editBtnStyle: {
+    marginTop: 20,
+    width: '36%',
+    backgroundColor: 'rgba(196, 157, 98, 0.59);',
+    paddingVertical: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  editBtnText: {
+    color: 'white',
+    fontSize: 18,
+    fontFamily: 'AbhayaLibre',
+    letterSpacing: 2,
+  },
+  editBtn: {
+    width: '93%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 30,
+  },
+  optionsCatStyle: {
+    width: '100%',
+    backgroundColor: 'rgba(196, 157, 98, 0.59);',
+    padding: 8,
+    marginTop: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  optionCatText: {
+    color: 'white',
+    fontSize: 25,
+    fontFamily: 'AbhayaLibre',
+  },
+  modalContainerCatBtn: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContentCatBtn: {
+    backgroundColor: 'rgb(228, 220, 220)',
+    padding: 20,
+    borderRadius: 5,
+    width: '90%',
+    height: 500,
+  },
+  catBtnStyle: {
+    marginTop: 25,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  catBtnStyling: {
+    width: '87%',
+    backgroundColor: 'rgba(196, 157, 98, 0.59);',
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  catBtnTextStyle: {
+    color: 'white',
+    fontSize: 28,
+    fontFamily: 'AbhayaLibre',
+    letterSpacing: 4,
   },
 });
