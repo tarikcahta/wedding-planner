@@ -3,7 +3,7 @@ import { useFonts } from 'expo-font';
 import { useNavigation } from '@react-navigation/native';
 import backIcon from '../assets/images/goBackIcon.png';
 
-const AdminHeader = ({ onPress, title }) => {
+const AdminHeader = ({ onPress, onLogOut, title }) => {
   const navigation = useNavigation();
 
   const handleLogout = async () => {
@@ -30,7 +30,7 @@ const AdminHeader = ({ onPress, title }) => {
           <Image source={backIcon} />
         </TouchableOpacity>
         <Text style={styles.pageHeaderText}>ADMIN</Text>
-        <TouchableOpacity onPress={handleLogout}>
+        <TouchableOpacity onPress={onLogOut}>
           <Text style={styles.logoutButtonText}>Log out</Text>
         </TouchableOpacity>
         <View></View>
