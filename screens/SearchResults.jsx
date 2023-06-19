@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
   },
   displayedLocations: {
     height: 200,
+    marginBottom: 20,
   },
   mBCategories: {
     width: '98%',
