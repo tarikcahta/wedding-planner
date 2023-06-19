@@ -8,28 +8,31 @@ import {
 } from 'react-native';
 import MainButton from '../components/MainButton';
 import bgImg from '../assets/images/bg.png';
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useState } from 'react';
 import { signUp } from './requests';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Toast } from 'toastify-react-native'
+import { Toast } from 'toastify-react-native';
+import { UserContext } from './UserContext';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Registration({ navigation }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState()
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [userData, setUserData] = useState({
     name: '',
-    surename: '',
+    surname: '',
     username: '',
     password: '',
     fianceName: '',
     weddingDate: null,
     budget: null,
+    wishList: '',
   });
+  const { setUserInfo } = useContext(UserContext);
 
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
@@ -48,35 +51,42 @@ export default function Registration({ navigation }) {
 
   const handlePress = () => {
     setShowDatePicker(true);
+    console.log('userData date', userData.weddingDate);
+    console.log('selectedDate date', selectedDate);
+    console.log('user info', userData);
   };
 
-  const handleDateChange = (_, selectedDate) => {
-    setSelectedDate(selectedDate)
-    if (selectedDate) {
+  const handleDateChange = (_, selected) => {
+    setSelectedDate(selected);
+    if (selected) {
+      setSelectedDate(selected);
       setShowDatePicker(false);
       setUserData({
         ...userData,
-        weddingDate: selectedDate
-      })
+        weddingDate: selectedDate,
+      });
     }
   };
   const onSaveEnteredUserData = async () => {
-    const { success, userInfo } = await signUp(userData)
+    const updatedUserData = {
+      ...userData,
+      weddingDate: selectedDate,
+    };
+
+    const { success } = await signUp(updatedUserData);
     if (success) {
-      navigation.navigate('Home', {
-        params: {
-          userInfo
-        },
-      });
-      Toast.success('Successfully saved!')
+      setUserInfo(updatedUserData)
+      navigation.navigate('Home');
+      Toast.success('Successfully saved!');
     } else {
-      Alert.alert('Failed to save user data')
-      navigation.navigate('Registration')
+      Alert.alert('Failed to save user data');
+      navigation.navigate('Registration');
     }
+  };
 
-  }
-
-  const displayDateText = selectedDate ? `${selectedDate.toLocaleDateString("en-US")}` : 'Wedding date'
+  const displayDateText = userData.weddingDate
+    ? `${userData.weddingDate.toLocaleDateString('en-US')}`
+    : 'Wedding date';
 
   return (
     <ImageBackground source={bgImg} resizeMode="cover" style={styles.imageBG}>
@@ -109,7 +119,7 @@ export default function Registration({ navigation }) {
           onChangeText={(text) =>
             setUserData({
               ...userData,
-              surename: text,
+              surname: text,
             })
           }
         />
@@ -153,7 +163,7 @@ export default function Registration({ navigation }) {
         {showDatePicker && (
           <DateTimePicker
             minimumDate={new Date()}
-            value={selectedDate || new Date()}
+            value={selectedDate}
             mode="date"
             display="default"
             onChange={handleDateChange}
@@ -185,7 +195,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    // justifyContent: 'center',
   },
   imageBG: {
     flex: 1,
