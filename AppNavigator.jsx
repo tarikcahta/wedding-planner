@@ -29,6 +29,9 @@ import AdminPanelAddNewObject from './screens/AdminPanelAddNewObject.jsx';
 import AdminPanelEditObject from './screens/AdminPanelEditObject.jsx';
 import SearchResults from './screens/SearchResults.jsx';
 
+import { UserProvider } from './screens/UserContext.js';
+import { CategoryProvider } from './screens/CategoryContext.js';
+
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -126,7 +129,7 @@ function Root() {
         options={{ drawerItemStyle: { display: 'none' } }}
       />
       <Stack.Screen
-        name="SearchResultDresses"
+        name="SearchResult"
         component={SearchResults}
         options={{ drawerItemStyle: { display: 'none' } }}
       />
@@ -170,25 +173,37 @@ function Root() {
         component={Invitations}
         options={{ drawerItemStyle: { display: 'none' } }}
       />
-      <Stack.Screen name="Cake" component={Cake} />
-      <Stack.Screen name="CarRental" component={CarRental} />
+      <Stack.Screen
+        name="Cake"
+        component={Cake}
+        options={{ drawerItemStyle: { display: 'none' } }}
+      />
+      <Stack.Screen
+        name="CarRental"
+        component={CarRental}
+        options={{ drawerItemStyle: { display: 'none' } }}
+      />
     </Drawer.Navigator>
   );
 }
 
 const AppNavigator = () => {
   return (
-    <NavigationContainer>
-      <ToastManager />
+    <UserProvider>
+      <CategoryProvider>
+        <NavigationContainer>
+          <ToastManager />
 
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen
-          name="Root"
-          component={Root}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen
+              name="Root"
+              component={Root}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </CategoryProvider>
+    </UserProvider>
   );
 };
 
