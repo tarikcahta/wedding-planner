@@ -8,30 +8,32 @@ import {
 } from 'react-native';
 import bgImg from '../assets/images/bg.png';
 import HomeHamburger from '../assets/images/HomeHamburger.png';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useContext } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import CountdownBubble from '../components/CountdownBubble';
+import { UserContext } from './UserContext';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Home({ navigation, route }) {
-  const { params } = route.params
-  const userInfo = params?.userInfo
-  const countdownData = {
-    targetDate: userInfo?.weddingDate || new Date(),
-  };
-
+  const { userInfo } = useContext(UserContext);
   const [timeLeft, setTimeLeft] = useState(
-    calculateTimeLeft(countdownData.targetDate)
+    calculateTimeLeft(userInfo?.weddingDate)
   );
+  const [fontsLoaded] = useFonts({
+    AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
+    QwitcherGrypen: require('../assets/fonts/QwitcherGrypen-Bold.ttf'),
+  });
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft(countdownData.targetDate));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [countdownData.targetDate]);
+    if (userInfo && userInfo.weddingDate) {
+      const timer = setInterval(() => {
+        setTimeLeft(calculateTimeLeft(userInfo?.weddingDate));
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [userInfo]);
 
   function calculateTimeLeft(date) {
     const difference = +new Date(date) - +new Date();
@@ -49,11 +51,6 @@ export default function Home({ navigation, route }) {
 
     return timeLeft;
   }
-
-  const [fontsLoaded] = useFonts({
-    AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
-    QwitcherGrypen: require('../assets/fonts/QwitcherGrypen-Bold.ttf'),
-  });
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -82,10 +79,10 @@ export default function Home({ navigation, route }) {
         <Text style={styles.introToCountdown}>Are getting married in</Text>
 
         <View style={styles.countdownBubbles}>
-          <CountdownBubble timeValue={22} timeUnit={'months'} />
+          <CountdownBubble timeValue={timeLeft.months} timeUnit={'months'} />
 
-          <CountdownBubble timeValue={3} timeUnit={'days'} />
-          <CountdownBubble timeValue={12} timeUnit={'hours'} />
+          <CountdownBubble timeValue={timeLeft.days} timeUnit={'days'} />
+          <CountdownBubble timeValue={timeLeft.hours} timeUnit={'hours'} />
           {/* <CountdownBubble timeValue={timeLeft.minutes} timeUnit={'minutes'} />
           <CountdownBubble timeValue={timeLeft.seconds} timeUnit={'seconds'} /> */}
         </View>
