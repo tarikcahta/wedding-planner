@@ -5,14 +5,12 @@ import {
   Text,
   TextInput,
   Modal,
-  Alert,
   FlatList,
 } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as ImagePicker from 'expo-image-picker';
-import SummaryHeader from '../components/SummaryHeader';
+import AdminHeader from '../components/AdminHeader';
 import EditCategoryInfoAdmin from '../components/EditCategoryInfoAdmin';
-import SubmitBtnAdmin from '../components/SubmitBtnAdmin';
 import { useState } from 'react';
 import { createNewItem } from './requests';
 
@@ -20,9 +18,6 @@ const AdminPanelAddNewObject = ({ navigation }) => {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [inputModalVisible, setInputModalVisible] = useState(false);
-  const [selectedBtn, setSelectedBtn] = useState('');
-  const [formData, setFormData] = useState({});
   const [selectedImg, setSelectedImg] = useState(null);
 
   // category button picker
@@ -38,83 +33,29 @@ const AdminPanelAddNewObject = ({ navigation }) => {
   }
 
   const handlePress = () => {
-    navigation.navigate('Summary');
-  };
-
-  const handleSearch = () => {
-    navigation.navigate('SearchResults');
-  };
-
-  const handleBtnPress = (buttonLabel) => {
-    setSelectedBtn(buttonLabel);
-    setInputModalVisible(true);
-  };
-
-  const handleInputChange = (text) => {
-    if (selectedBtn === 'Name') {
-      setName(text);
-    } else if (selectedBtn === 'Address') {
-      setAddress(text);
-    } else if (selectedBtn === 'Phone Number') {
-      setPhoneNumber(text);
-    }
-  };
-
-  const handlePropertySubmit = () => {
-    if (selectedBtn === 'Name') {
-      setFormData((prevData) => ({ ...prevData, name }));
-    } else if (selectedBtn === 'Address') {
-      setFormData((prevData) => ({ ...prevData, address }));
-    } else if (selectedBtn === 'Phone Number') {
-      setFormData((prevData) => ({ ...prevData, phoneNumber }));
-    }
-    setInputModalVisible(false);
-    setSelectedBtn('');
+    navigation.navigate('admin/category');
   };
 
   const handleSubmit = async () => {
-    if (name && address && phoneNumber) {
-      const fullFormData = { ...formData, name, address, phoneNumber };
+    const formattedData = {
+      companyName: name,
+      location: address,
+      phoneNumber: phoneNumber,
+      // imageUrl: '',
+      isExpensive: true,
+      category: selectedOption,
+    };
 
+    console.log(formattedData);
+    const response = await createNewItem(formattedData);
 
-      const formattedData =
-      {
-        companyName: fullFormData.name,
-        location: fullFormData.address,
-        phoneNumber,
-        imageUrl: '',
-        isExpensive: true,
-        category: selectedOption,
-      }
-
-      const response = await createNewItem(formattedData)
-
-      if (response.success) {
-        navigation.navigate('AdminPanel', {
-          categoryName: selectedOption
-        })
-      }
-
-      Alert.alert('Success', 'Form data submitted successfully!');
-    } else {
-      Alert.alert('Error', 'Please fill in all fields!');
+    if (response.success) {
+      setSelectedOption('Category');
+      setName('');
+      setAddress('');
+      setPhoneNumber('');
+      navigation.navigate('AdminPanel');
     }
-    // send location data to server
-    // -- CODE --
-  };
-
-  const getBtnTitle = (property) => {
-    if (formData.hasOwnProperty(property)) {
-      const value = formData[property];
-      if (value) {
-        return value;
-      }
-    }
-    if (property === 'phoneNumber') return (property = 'Phone Number');
-    if (property === 'address') return (property = 'Address');
-    if (property === 'name') return (property = 'Name');
-
-    return property;
   };
 
   const handleImagePicker = async () => {
@@ -140,10 +81,10 @@ const AdminPanelAddNewObject = ({ navigation }) => {
     'Photo / Video',
     'Music',
     'Catering',
-    'Decorations',
+    'Decoration',
     'Invitations',
     'Cake',
-    'Car rental',
+    'Car Rental',
   ];
 
   const handleOptionSelect = (option) => {
@@ -153,7 +94,7 @@ const AdminPanelAddNewObject = ({ navigation }) => {
 
   return (
     <View style={styles.pageContainer}>
-      <SummaryHeader
+      <AdminHeader
         title={'ADMIN'}
         onPress={handlePress}
         onPressDrawer={() => navigation.openDrawer()}
@@ -202,46 +143,40 @@ const AdminPanelAddNewObject = ({ navigation }) => {
               </View>
             </Modal>
           </View>
-          <EditCategoryInfoAdmin
-            objProp={getBtnTitle('name')}
-            onPress={() => handleBtnPress('Name')}
-          />
-          <EditCategoryInfoAdmin
-            objProp={getBtnTitle('address')}
-            onPress={() => handleBtnPress('Address')}
-          />
-          <EditCategoryInfoAdmin
-            onPress={() => handleBtnPress('Phone Number')}
-            objProp={getBtnTitle('phoneNumber')}
-          />
+          <View style={styles.viewStyle}>
+            <TextInput
+              style={styles.textInputStyle}
+              placeholder={'Name'}
+              placeholderTextColor={'white'}
+              value={name}
+              onChangeText={(text) => setName(text)}
+            />
+          </View>
+          <View style={styles.viewStyle}>
+            <TextInput
+              style={styles.textInputStyle}
+              placeholder={'Address'}
+              placeholderTextColor={'white'}
+              value={address}
+              onChangeText={(text) => setAddress(text)}
+            />
+          </View>
+
+          <View style={styles.viewStyle}>
+            <TextInput
+              style={styles.textInputStyle}
+              placeholder={'Phone Number'}
+              placeholderTextColor={'white'}
+              value={phoneNumber}
+              onChangeText={(text) => setPhoneNumber(text)}
+            />
+          </View>
           <EditCategoryInfoAdmin
             onPress={handleImagePicker}
             objProp={'Image'}
           />
         </View>
-        <Modal
-          visible={inputModalVisible}
-          animationType="slide"
-          transparent={true}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <TextInput
-                style={styles.optionsStyle}
-                placeholder={`Enter ${selectedBtn}`}
-                value={
-                  selectedBtn === 'Name'
-                    ? name
-                    : selectedBtn === 'Address'
-                      ? address
-                      : phoneNumber
-                }
-                onChangeText={handleInputChange}
-              />
-              <SubmitBtnAdmin onPress={() => handlePropertySubmit()} />
-            </View>
-          </View>
-        </Modal>
+
         <View style={styles.btnPosition}>
           <TouchableOpacity onPress={handleSubmit} style={styles.btnStyle}>
             <Text style={styles.btnText}>ADD NEW</Text>
@@ -294,25 +229,6 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     fontSize: 25,
     fontFamily: 'AbhayaLibre',
-  },
-  btnPosition: {
-    width: '93%',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  btnStyle: {
-    marginTop: 20,
-    width: '36%',
-    backgroundColor: 'rgba(196, 157, 98, 0.59);',
-    paddingVertical: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  btnText: {
-    color: 'white',
-    fontSize: 18,
-    fontFamily: 'AbhayaLibre',
-    letterSpacing: 2,
   },
   modalContainer: {
     flex: 1,
@@ -381,5 +297,23 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: '90%',
     height: 500,
+  },
+  viewStyle: {
+    marginTop: 25,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textInputStyle: {
+    width: '87%',
+    backgroundColor: 'rgba(196, 157, 98, 0.59);',
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    fontSize: 25,
+    fontFamily: 'AbhayaLibre',
+    color: 'white',
   },
 });

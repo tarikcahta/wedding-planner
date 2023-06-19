@@ -1,26 +1,31 @@
-import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+} from 'react-native';
 import { useFonts } from 'expo-font';
-import SummaryHeader from '../components/SummaryHeader';
+import AdminHeader from '../components/AdminHeader';
 import LocationContainerAdmin from '../components/LocationContainerAdmin';
-import { useEffect, useState } from 'react';
-import { getItemsByCategory } from './requests';
+import { useEffect, useState, useContext } from 'react';
+import { CategoryContext } from './CategoryContext';
 
 const AdminPanelCategory = ({ route, navigation }) => {
-  const [shopItems, setItems] = useState([])
+  const { fetchShopItemsByCategory, deleteShopById } =
+    useContext(CategoryContext);
+  const [shopItems, setItems] = useState([]);
 
   useEffect(() => {
     const loadData = async () => {
-
-      const res = await getItemsByCategory(route.params?.categoryName)
-      setItems(res)
+      const res = await fetchShopItemsByCategory(route.params?.categoryName);
+      setItems(res);
     };
     loadData();
-  }, [route.params]);
+  }, [fetchShopItemsByCategory, route.params]);
 
-
-
-  const paramData = route.params
-  const categoryName = paramData ? paramData.categoryName : 'ADMIN'
+  const paramData = route.params;
+  const categoryName = paramData ? paramData.categoryName : 'ADMIN';
 
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
@@ -30,32 +35,53 @@ const AdminPanelCategory = ({ route, navigation }) => {
     return null;
   }
 
-  const onEditItemInfo = (itemId) => {
+  const onEditItemInfo = (itemId, shopData) => {
     navigation.navigate('admin/edit', {
-      categoryId: itemId,
-      categoryName
-    })
-  }
+      // categoryId: itemId,
+      itemId,
+      shopData,
+      categoryName,
+    });
+  };
 
+  const onDeleteLocation = async (itemId) => {
+    try {
+      await deleteShopById(itemId);
+      // item deletion successful -> display data
+      const updatedItems = await fetchShopItemsByCategory(
+        route.params?.categoryName
+      );
+      setItems(updatedItems);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <View style={styles.pageContainer}>
-      <SummaryHeader title={categoryName.toUpperCase()} onPress={() => navigation.navigate('AdminPanel')} />
+      <AdminHeader
+        title={categoryName.toUpperCase()}
+        onPress={() => navigation.navigate('AdminPanel')}
+      />
       <View style={styles.mainBody}>
         <ScrollView>
-          {shopItems.length > 0 && shopItems.map((loc) => (
-            <LocationContainerAdmin
-              key={loc.id}
-              title={loc.companyName}
-              imageUrl={loc.imageUrl}
-              itemId={loc.id}
-              onEditPress={onEditItemInfo}
-            />
-          ))}
-
+          {shopItems.length > 0 &&
+            shopItems.map((loc) => (
+              <LocationContainerAdmin
+                key={loc.id}
+                title={loc.companyName}
+                imageUrl={loc.imageUrl}
+                itemId={loc.id}
+                onEditPress={() => onEditItemInfo(loc.id, loc)}
+                onDeletePress={onDeleteLocation}
+              />
+            ))}
         </ScrollView>
         <View style={styles.btnPosition}>
-          <TouchableOpacity style={styles.btnStyle} onPress={() => navigation.navigate(`admin/create`)}>
+          <TouchableOpacity
+            style={styles.btnStyle}
+            onPress={() => navigation.navigate(`admin/create`)}
+          >
             <Text style={styles.btnText}>ADD NEW</Text>
           </TouchableOpacity>
         </View>
@@ -80,6 +106,7 @@ const styles = StyleSheet.create({
     width: '96%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    marginBottom: 25,
   },
   btnStyle: {
     marginTop: 20,

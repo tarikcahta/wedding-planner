@@ -1,6 +1,6 @@
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useFonts } from 'expo-font';
-import SummaryHeader from '../components/SummaryHeader';
+import AdminHeaderMain from '../components/AdminHeaderMain';
 import CategoryButton from '../components/CategoryButton';
 
 const AdminPanelMain = ({ navigation }) => {
@@ -14,13 +14,13 @@ const AdminPanelMain = ({ navigation }) => {
 
   const onSelectCategory = (categoryName) => {
     navigation.navigate('admin/category', {
-      categoryName
-    })
-  }
+      categoryName,
+    });
+  };
 
   return (
     <View style={styles.pageContainer}>
-      <SummaryHeader title={'ADMIN'} />
+      <AdminHeaderMain title={'ADMIN'} />
       <View style={styles.mainBody}>
         <ScrollView style={styles.scrollStyle}>
           <CategoryButton
@@ -37,7 +37,7 @@ const AdminPanelMain = ({ navigation }) => {
           />
           <CategoryButton
             title={'Photo / Video'}
-            onPress={() => onSelectCategory('PhotoVideo')}
+            onPress={() => onSelectCategory('Photo / Video')}
           />
           <CategoryButton
             title={'Music'}
@@ -60,8 +60,8 @@ const AdminPanelMain = ({ navigation }) => {
             onPress={() => onSelectCategory('Cake')}
           />
           <CategoryButton
-            title={'Car rental'}
-            onPress={() => onSelectCategory('CarRental')}
+            title={'Car Rental'}
+            onPress={() => onSelectCategory('Car Rental')}
           />
         </ScrollView>
       </View>
@@ -80,5 +80,8 @@ const styles = StyleSheet.create({
   mainBody: {
     flex: 4,
     width: '100%',
+  },
+  scrollStyle: {
+    marginBottom: 25,
   },
 });
