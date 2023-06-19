@@ -32,7 +32,7 @@ const PhotoVideo = ({ navigation }) => {
   };
 
   const handlePress = () => {
-    navigation.navigate('SearchResultDresses');
+    navigation.navigate('SearchResult', { ctgParam: 'Photo / Video' });
   };
 
   const handleTextChange = (inputText) => {

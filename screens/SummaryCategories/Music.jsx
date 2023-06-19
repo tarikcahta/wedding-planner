@@ -32,7 +32,7 @@ const Music = ({ navigation }) => {
   };
 
   const handlePress = () => {
-    navigation.navigate('SearchResultDresses');
+    navigation.navigate('SearchResult', { ctgParam: 'Music' });
   };
 
   const handleTextChange = (inputText) => {

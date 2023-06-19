@@ -32,7 +32,7 @@ const Dresses = ({ navigation }) => {
   };
 
   const handlePress = () => {
-    navigation.navigate('SearchResultDresses');
+    navigation.navigate('SearchResult', { ctgParam: 'Dresses' });
   };
 
   const handleTextChange = (inputText) => {

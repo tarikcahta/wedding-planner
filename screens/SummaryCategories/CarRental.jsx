@@ -32,7 +32,7 @@ const CarRental = ({ navigation }) => {
   };
 
   const handlePress = () => {
-    navigation.navigate('SearchResultDresses');
+    navigation.navigate('SearchResult', { ctgParam: 'Car Rental' });
   };
 
   const handleTextChange = (inputText) => {
