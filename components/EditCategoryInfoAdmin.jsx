@@ -13,9 +13,12 @@ const EditCategoryInfoAdmin = ({ objProp, onPress }) => {
 
   return (
     <View style={styles.btnPosition}>
-      <TouchableOpacity onPress={onPress}
-        style={styles.btnStyle}>
-        <TextInput style={styles.btnText} placeholder={objProp} />
+      <TouchableOpacity onPress={onPress} style={styles.btnStyle}>
+        <TextInput
+          style={styles.btnText}
+          placeholder={objProp}
+          placeholderTextColor={'white'}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -35,13 +38,12 @@ const styles = StyleSheet.create({
     width: '87%',
     backgroundColor: 'rgba(196, 157, 98, 0.59);',
     height: 53,
-    // paddingVertical: 17,
     justifyContent: 'center',
     alignItems: 'center',
   },
   btnText: {
     color: 'white',
-    fontSize: 15,
+    fontSize: 22,
     fontFamily: 'AbhayaLibre',
   },
 });

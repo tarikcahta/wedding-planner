@@ -7,7 +7,8 @@ const LocationContainerAdmin = ({
   title,
   itemId,
   imageUrl,
-  onEditPress
+  onEditPress,
+  onDeletePress,
 }) => {
   const [fontsLoaded] = useFonts({
     AbhayaLibre: require('../assets/fonts/AbhayaLibre-Bold.ttf'),
@@ -16,7 +17,6 @@ const LocationContainerAdmin = ({
   if (!fontsLoaded) {
     return null;
   }
-
 
   return (
     <View style={styles.locations}>
@@ -28,10 +28,16 @@ const LocationContainerAdmin = ({
             <Text style={styles.headerTextStyles}>{title}</Text>
           </View>
           <View style={styles.infoBody}>
-            <TouchableOpacity style={styles.btnStyle} onPress={() => onEditPress(itemId)}>
+            <TouchableOpacity
+              style={styles.btnStyle}
+              onPress={() => onEditPress(itemId)}
+            >
               <Text style={styles.btnText}>EDIT</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btnStyle}>
+            <TouchableOpacity
+              onPress={() => onDeletePress(itemId)}
+              style={styles.btnStyle}
+            >
               <Text style={styles.btnText}>DELETE</Text>
             </TouchableOpacity>
           </View>
