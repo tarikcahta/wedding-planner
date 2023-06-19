@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Modal,
 } from 'react-native';
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useState, useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -18,30 +18,6 @@ import { UserContext } from './UserContext';
 SplashScreen.preventAutoHideAsync();
 
 export default function MyWedding({ navigation }) {
-  // const categories = [
-  //   {
-  //     category: 'Dresses',
-  //     title: 'Salon vjenčanica i svečanih haljina',
-  //     address: 'Otoka, Džemala Bijedića 25/E Sarajevo',
-  //     openingHour: 8,
-  //     closingHour: 20,
-  //     workHoursTime: ' closes 8pm',
-  //     phoneNumber: '061 143 950',
-  //     image: require('../assets/images/salon1.jpg'),
-  //   },
-  //   {
-  //     category: 'Venues',
-
-  //     title: 'Restaurant Tavola',
-  //     address: 'Maršala Tita 50',
-  //     openingHour: 8,
-  //     closingHour: 23,
-  //     workHoursTime: ' closes 11pm',
-  //     phoneNumber: '033 222 207',
-  //     image: require('../assets/images/venues1.jpg'),
-  //   },
-  // ];
-
   const { categories } = useContext(CategoryContext);
   const { userInfo } = useContext(UserContext);
   const [fontsLoaded] = useFonts({
@@ -51,6 +27,10 @@ export default function MyWedding({ navigation }) {
   const [selectedShop, setSelectedShop] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [ctgs, setCtgs] = useState(categories);
+
+  useEffect(() => {
+    setCtgs(categories);
+  }, [categories]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -70,7 +50,10 @@ export default function MyWedding({ navigation }) {
   const handleDelete = () => {
     if (selectedShop) {
       const updatedCategories = categories.map((category) => {
-        if (category.userIdSelected === userInfo.username) {
+        if (
+          category.userIdSelected === userInfo.username &&
+          category.id === selectedShop.id
+        ) {
           return {
             ...category,
             userIdSelected: null,
@@ -78,7 +61,11 @@ export default function MyWedding({ navigation }) {
         }
         return category;
       });
-      setCtgs(updatedCategories);
+      const filteredCategories = updatedCategories.filter(
+        (category) => category.userIdSelected === userInfo.username
+      );
+
+      setCtgs(filteredCategories);
     }
     setIsModalVisible(false);
   };
@@ -184,38 +171,52 @@ const styles = StyleSheet.create({
     fontFamily: 'AbhayaLibre',
   },
   modalContainer: {
-    flex: 1,
+    position: 'absolute',
+    bottom: '24%',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    marginTop: 22,
   },
   modalContent: {
-    backgroundColor: 'white',
-    paddingHorizontal: 20,
-    paddingVertical: 30,
+    margin: 20,
+    width: '92%',
+    height: 412,
+    backgroundColor: 'rgba(220, 197, 163, 0.88)',
     borderRadius: 10,
-    width: '80%',
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   modalText: {
-    fontSize: 18,
+    fontSize: 28,
     marginBottom: 20,
     textAlign: 'center',
+    fontFamily: 'AbhayaLibre',
+    color: 'white',
   },
   modalButtons: {
+    width: '100%',
+    height: 150,
+    marginTop: 20,
+    justifyContent: 'space-around',
+    alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   modalButton: {
-    backgroundColor: 'red',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-  cancelButton: {
-    backgroundColor: 'gray',
+    backgroundColor: 'rgba(164, 135, 93, 0.86)',
+    width: '35%',
+    elevation: 2,
+    padding: 10,
   },
   modalButtonText: {
     color: 'white',
-    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'AbhayaLibre',
+    fontSize: 23,
+    letterSpacing: 2,
   },
 });
