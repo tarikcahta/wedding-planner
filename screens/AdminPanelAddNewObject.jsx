@@ -11,14 +11,16 @@ import { useFonts } from 'expo-font';
 import * as ImagePicker from 'expo-image-picker';
 import AdminHeader from '../components/AdminHeader';
 import EditCategoryInfoAdmin from '../components/EditCategoryInfoAdmin';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { createNewItem } from './requests';
+import { CategoryContext } from './CategoryContext';
 
 const AdminPanelAddNewObject = ({ navigation }) => {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedImg, setSelectedImg] = useState(null);
+  const { categories, updateCategories } = useContext(CategoryContext);
 
   // category button picker
   const [selectedOption, setSelectedOption] = useState(null);
@@ -36,6 +38,10 @@ const AdminPanelAddNewObject = ({ navigation }) => {
     navigation.navigate('admin/category');
   };
 
+  const handleLogOut = () => {
+    navigation.navigate('Login')
+  }
+
   const handleSubmit = async () => {
     const formattedData = {
       companyName: name,
@@ -50,6 +56,7 @@ const AdminPanelAddNewObject = ({ navigation }) => {
     const response = await createNewItem(formattedData);
 
     if (response.success) {
+      updateCategories([...categories, formattedData]);
       setSelectedOption('Category');
       setName('');
       setAddress('');
@@ -95,9 +102,8 @@ const AdminPanelAddNewObject = ({ navigation }) => {
   return (
     <View style={styles.pageContainer}>
       <AdminHeader
-        title={'ADMIN'}
         onPress={handlePress}
-        onPressDrawer={() => navigation.openDrawer()}
+        onLogOut={handleLogOut}
       />
 
       <View style={styles.mainBody}>
