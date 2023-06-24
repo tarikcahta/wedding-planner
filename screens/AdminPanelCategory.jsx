@@ -62,6 +62,7 @@ const AdminPanelCategory = ({ route, navigation }) => {
       <AdminHeader
         title={categoryName.toUpperCase()}
         onPress={() => navigation.navigate('AdminPanel')}
+        onLogOut={() => navigation.navigate('Login')}
       />
       <View style={styles.mainBody}>
         <ScrollView>

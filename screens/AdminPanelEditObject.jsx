@@ -89,7 +89,7 @@ const AdminPanelEditObject = ({ navigation, route }) => {
 
   return (
     <View style={styles.pageContainer}>
-      <AdminHeader onPress={handlePress} />
+      <AdminHeader onPress={handlePress} onLogOut={() => navigation.navigate('Login')} />
 
       <View style={styles.mainBody}>
         <View style={styles.mBCategories}>
